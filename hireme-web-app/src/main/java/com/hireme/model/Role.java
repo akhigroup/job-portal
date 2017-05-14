@@ -1,3 +1,11 @@
+/**
+ * Model class for Role entity.
+ * 
+ * @author	Sushant Vairagade
+ * @version 1.0
+ * @Since	11-05-2017
+ */
+
 package com.hireme.model;
 
 import java.util.Set;

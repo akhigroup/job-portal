@@ -3,6 +3,8 @@ package com.hireme.service.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,4 +47,14 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	@Override
+	public User getUser(long userId) throws BusinessException {
+		try {
+			User user = userRepository.getOne(userId);
+			user.toString(); //try to access the object so that if not found will throw an exception
+			return user;
+		} catch(EntityNotFoundException e) {
+			throw new BusinessException(404, "No user found having id " + userId);
+		}
+	}
 }
