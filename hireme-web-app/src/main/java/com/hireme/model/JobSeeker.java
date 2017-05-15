@@ -23,13 +23,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 @Entity
 @Table(name = "job_seeker")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "jobSeekerId", scope = JobSeeker.class)
 public class JobSeeker {
 	
 	@Id
@@ -50,13 +45,13 @@ public class JobSeeker {
 	@Column(name = "summary")
 	private String summary;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<WorkExperience> workExperience;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Education> education;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "jobSeeker", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Skill> skills;
 	
 	@OneToOne(fetch = FetchType.LAZY)

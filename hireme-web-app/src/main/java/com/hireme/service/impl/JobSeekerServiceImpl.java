@@ -8,7 +8,6 @@ import com.hireme.exceptions.BusinessException;
 import com.hireme.model.JobSeeker;
 import com.hireme.service.JobSeekerService;
 
-
 @Service("jobSeekerService")
 public class JobSeekerServiceImpl implements JobSeekerService {
 	

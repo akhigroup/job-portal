@@ -19,7 +19,13 @@ public class JobSeekerModel {
 	private String summary;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private Map<String, List<EducationModel>> education;
+	private Map<String, List<EducationModel>> educationList;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Map<String, List<WorkExperienceModel>> workExperienceList;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Map<String, List<SkillModel>> skillList;
 
 	public long getJobSeekerId() {
 		return jobSeekerId;
@@ -61,11 +67,27 @@ public class JobSeekerModel {
 		this.summary = summary;
 	}
 
-	public Map<String, List<EducationModel>> getEducation() {
-		return education;
+	public Map<String, List<EducationModel>> getEducationList() {
+		return educationList;
 	}
 
-	public void setEducation(Map<String, List<EducationModel>> education) {
-		this.education = education;
+	public void setEducationList(Map<String, List<EducationModel>> educationList) {
+		this.educationList = educationList;
+	}
+
+	public Map<String, List<WorkExperienceModel>> getWorkExperienceList() {
+		return workExperienceList;
+	}
+
+	public void setWorkExperienceList(Map<String, List<WorkExperienceModel>> workExperienceList) {
+		this.workExperienceList = workExperienceList;
+	}
+
+	public Map<String, List<SkillModel>> getSkillList() {
+		return skillList;
+	}
+
+	public void setSkillList(Map<String, List<SkillModel>> skillList) {
+		this.skillList = skillList;
 	}
 }

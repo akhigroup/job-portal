@@ -16,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -28,9 +27,11 @@ public class Skill {
 	@Column(name = "skill_id")
 	private long skillId;
 	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "experience_id")
-	private Experience experience;
+	@Column(name = "skill_name")
+	private String skill;
+	
+	@Column(name = "years_experience")
+	private int numberOfYears;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "job_seeker_id")
@@ -44,11 +45,27 @@ public class Skill {
 		this.skillId = skillId;
 	}
 
-	public Experience getExperience() {
-		return experience;
+	public String getSkill() {
+		return skill;
 	}
 
-	public void setExperience(Experience experience) {
-		this.experience = experience;
+	public void setSkill(String skill) {
+		this.skill = skill;
+	}
+
+	public int getNumberOfYears() {
+		return numberOfYears;
+	}
+
+	public void setNumberOfYears(int numberOfYears) {
+		this.numberOfYears = numberOfYears;
+	}
+
+	public JobSeeker getJobSeeker() {
+		return jobSeeker;
+	}
+
+	public void setJobSeeker(JobSeeker jobSeeker) {
+		this.jobSeeker = jobSeeker;
 	}
 }
