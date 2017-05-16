@@ -171,6 +171,40 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
+	
+	@PostMapping(value = "/workex/{workExId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> updateWorkExperience(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "workExId", required = true) long workExId,
+			@RequestBody WorkExperienceModel workExperienceModel) {
+		try {
+			userService.getUser(userId);
+			JobSeeker newJobSeeker = jobSeekerService.getByUserId(userId);
+			List<WorkExperience> workExList = newJobSeeker.getWorkExperience();
+			if (workExList == null || workExList.size() == 0) {
+				throw new BusinessException(404, "Nothing to update");
+			}
+			else {
+				for (WorkExperience workExperience : workExList) {
+					if(workExperience.getWorkExperienceId() == workExId) {
+						workExperience.setCompanyName(workExperienceModel.getCompanyName());
+						workExperience.setJobTitle(workExperienceModel.getJobTitle());
+						workExperience.getPeriod().setFromDate(workExperienceModel.getFrom());
+						workExperience.getPeriod().setToDate(workExperienceModel.getTo());
+						workExperience.setJobSeeker(newJobSeeker);
+						jobSeekerService.update(newJobSeeker);
+						return ResponseEntity.ok(ServiceUtil.buildResponse("workExperienceList",
+								ServiceUtil.getWorkExList(newJobSeeker.getWorkExperience()), null));
+					}
+				}
+				throw new BusinessException(404, "No work-ex with id" + workExId + " found to update");
+			}
+			
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
 
 	@DeleteMapping(value = "/workex/{workExId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> deleteWorkExperience(@PathVariable(name = "userId", required = true) long userId,
