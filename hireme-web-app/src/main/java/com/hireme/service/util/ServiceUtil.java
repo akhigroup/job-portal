@@ -218,6 +218,7 @@ public class ServiceUtil {
 		jobPostModel.setLocation(jobPost.getLocation());
 		jobPostModel.setSalary(jobPost.getSalary());
 		jobPostModel.setTitle(jobPost.getTitle());
+		jobPostModel.setResponsibilities(jobPost.getResponsibilities());
 		return jobPostModel;
 	}
 }

@@ -58,6 +58,19 @@ public class CompanyController {
 		}
 	}
 	
+	
+	@GetMapping(value = "/job", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> getCompanyJobPost(@PathVariable(name = "userId", required = true) long userId) {
+		try {
+			List<JobPost> jobPosts = companyService.getJobPosts(userId);
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+	
 	@PostMapping(value = "/job", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> postJob(@PathVariable(name = "userId", required = true) long userId,
 			@RequestBody JobPost jobPost) {

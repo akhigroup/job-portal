@@ -34,6 +34,9 @@ public class JobPost {
 	@Column(name = "status")
 	private String status;
 	
+	@Column(name = "responsibilities")
+	private String responsibilities;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "company_id")
 	private Company company;
@@ -92,5 +95,13 @@ public class JobPost {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	public String getResponsibilities() {
+		return responsibilities;
+	}
+
+	public void setResponsibilities(String responsibilities) {
+		this.responsibilities = responsibilities;
 	}
 }

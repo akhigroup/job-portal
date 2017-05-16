@@ -118,4 +118,15 @@ public class CompanyServiceImpl implements CompanyService {
 		company = companyDao.update(company);
 		return company.getJobPosts();
 	}
+
+	@Override
+	public List<JobPost> getJobPosts(long userId) throws BusinessException {
+		userService.getUser(userId); // to check if user is valid
+		Company company = getByUserId(userId);
+		List<JobPost> jobPosts = company.getJobPosts();
+		if (jobPosts == null) {
+			throw new BusinessException(404, "Nojobs posted for company with user Id " + userId);
+		}
+		return jobPosts;
+	}
 }

@@ -11,6 +11,8 @@ public class JobPostModel {
 	private String location;
 
 	private long salary;
+	
+	private String responsibilities;
 
 	public long getJobPostId() {
 		return jobPostId;
@@ -52,4 +54,11 @@ public class JobPostModel {
 		this.salary = salary;
 	}
 
+	public String getResponsibilities() {
+		return responsibilities;
+	}
+
+	public void setResponsibilities(String responsibilities) {
+		this.responsibilities = responsibilities;
+	}
 }
