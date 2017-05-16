@@ -191,6 +191,7 @@ public class ServiceUtil {
 		companyModel.setLocation(company.getLocation());
 		companyModel.setLogoURL(company.getLogoURL());
 		companyModel.setName(company.getName());
+		companyModel.setWebsite(company.getWebsite());
 		
 		if(needAll) {
 			List<JobPost> jobPosts = company.getJobPosts();

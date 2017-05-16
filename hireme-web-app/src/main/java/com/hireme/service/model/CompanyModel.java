@@ -17,6 +17,8 @@ private long companyId;
 	
 	private String description;
 	
+	private String website;
+	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Map<String, List<JobPostModel>> jobPosts;
 
@@ -66,5 +68,13 @@ private long companyId;
 
 	public void setJobPosts(Map<String, List<JobPostModel>> jobPosts) {
 		this.jobPosts = jobPosts;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 }

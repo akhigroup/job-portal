@@ -71,4 +71,17 @@ public class CompanyController {
 		}
 	}
 	
+	@PostMapping(value = "/job/{jobId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> updateJob(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobId", required = true) long jobId,
+			@RequestBody JobPost jobPost) {
+		try {
+			List<JobPost> jobPosts = companyService.updateJobPost(userId, jobId, jobPost);
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
 }

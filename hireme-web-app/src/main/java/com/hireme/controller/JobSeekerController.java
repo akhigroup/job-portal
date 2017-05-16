@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Education;
+import com.hireme.model.JobPost;
 import com.hireme.model.JobSeeker;
 import com.hireme.model.Skill;
 import com.hireme.model.User;
 import com.hireme.model.WorkExperience;
 import com.hireme.service.JobSeekerService;
+import com.hireme.service.JobService;
 import com.hireme.service.UserService;
 import com.hireme.service.model.EducationModel;
 import com.hireme.service.model.JobSeekerModel;
@@ -42,6 +44,9 @@ public class JobSeekerController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private JobService jobService;
 
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> createOrUpdateJobSeeker(@PathVariable(name = "userId", required = true) long userId,
@@ -141,8 +146,8 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
-	
+
+
 	@PostMapping(value = "/workex", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> addWorkExperience(@PathVariable(name = "userId", required = true) long userId,
 			@RequestBody WorkExperienceModel workExperienceModel) {
@@ -194,8 +199,8 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
-	
+
+
 	@PostMapping(value = "/skill", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> addSkill(@PathVariable(name = "userId", required = true) long userId,
 			@RequestBody SkillModel skillModel) {
@@ -247,4 +252,96 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
+	
+	@PostMapping(value = "/job/{jobPostId}/application", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> applyJob(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			jobService.apply(jobSeeker.getJobSeekerId(), jobPostId);
+			return ResponseEntity.ok("");
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+	@DeleteMapping(value = "/job/{jobPostId}/application", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> withdrawJobApplication(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			jobService.withdraw(jobSeeker.getJobSeekerId(), jobPostId);
+			return ResponseEntity.ok("");
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+	@GetMapping(value = "/job/application", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> getJobApplication(@PathVariable(name = "userId", required = true) long userId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			List<JobPost> jobPosts = jobSeeker.getApplication();
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
+					ServiceUtil.getJobPostList(jobPosts), null));
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+	
+	@PostMapping(value = "/job/{jobPostId}/interest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> addIntrestJob(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			jobService.addIntrest(jobSeeker.getJobSeekerId(), jobPostId);
+			return ResponseEntity.ok("");
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+	@DeleteMapping(value = "/job/{jobPostId}/intrest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> removeJobIntrest(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			jobService.removeIntrest(jobSeeker.getJobSeekerId(), jobPostId);
+			return ResponseEntity.ok("");
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+	@GetMapping(value = "/job/intrest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> getJobIntrest(@PathVariable(name = "userId", required = true) long userId) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			List<JobPost> jobPosts = jobSeeker.getInterests();
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
+					ServiceUtil.getJobPostList(jobPosts), null));
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
 }

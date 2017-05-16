@@ -18,7 +18,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -57,6 +59,20 @@ public class JobSeeker {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="job_application",
+			joinColumns= {@JoinColumn(name="job_seeker_id", referencedColumnName="job_seeker_id")},
+			inverseJoinColumns= {@JoinColumn(name="job_post_id", referencedColumnName="job_post_id")})
+    private List<JobPost> application;
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="job_interest",
+			joinColumns= {@JoinColumn(name="job_seeker_id", referencedColumnName="job_seeker_id")},
+			inverseJoinColumns= {@JoinColumn(name="job_post_id", referencedColumnName="job_post_id")})
+    private List<JobPost> interests;
 
 	public long getJobSeekerId() {
 		return jobSeekerId;
@@ -128,5 +144,21 @@ public class JobSeeker {
 
 	public void setSkills(List<Skill> skills) {
 		this.skills = skills;
+	}
+
+	public List<JobPost> getApplication() {
+		return application;
+	}
+
+	public void setApplication(List<JobPost> application) {
+		this.application = application;
+	}
+
+	public List<JobPost> getInterests() {
+		return interests;
+	}
+
+	public void setInterests(List<JobPost> interests) {
+		this.interests = interests;
 	}
 }

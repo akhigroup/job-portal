@@ -9,6 +9,10 @@ public interface JobSeekerService {
 	
 	JobSeeker update(JobSeeker jobSeeker) throws BusinessException;
 	
+	JobSeeker get(long jobSeekerId) throws BusinessException;
+	
 	JobSeeker getByUserId(long userId) throws BusinessException;
+	
+	void apply(long jobSeekerId, long jobPostId) throws BusinessException;
 
 }

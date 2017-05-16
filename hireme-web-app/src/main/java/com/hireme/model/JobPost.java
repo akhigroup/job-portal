@@ -31,6 +31,9 @@ public class JobPost {
 	@Column(name = "salary")
 	private long salary;
 	
+	@Column(name = "status")
+	private String status;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "company_id")
 	private Company company;
@@ -73,6 +76,14 @@ public class JobPost {
 
 	public void setSalary(long salary) {
 		this.salary = salary;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Company getCompany() {

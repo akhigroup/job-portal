@@ -35,4 +35,13 @@ public class JobSeekerDaoImpl implements JobSeekerDao {
 		}
 		throw new BusinessException(404, "Job seeker with user id " + userId + " not found.");
 	}
+
+	@Override
+	public JobSeeker get(long jobSeekerId) throws BusinessException {
+		JobSeeker jobSeeker = jobSeekerRepository.getOne(jobSeekerId);
+		if(jobSeeker != null) {
+			return jobSeeker;
+		}
+		throw new BusinessException(404, "Job seeker with id " + jobSeekerId + " not found.");	
+	}
 }

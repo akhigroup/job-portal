@@ -35,6 +35,9 @@ public class Company {
 	@Column(name = "description")
 	private String description;
 	
+	@Column(name = "website")
+	private String website;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<JobPost> jobPosts;
 	
@@ -96,5 +99,13 @@ public class Company {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 }
