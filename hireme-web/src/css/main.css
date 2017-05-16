@@ -1,0 +1,30 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,600,400italic);
+
+#seekerProfileImage{
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    display: block;
+    border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+}
+
+#addWorkExImg, #addEducationImg, #addSkillImg{
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+    display: block;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+span {
+    margin: 1em 0 0.5em 0;
+    color: #317aa8;
+    font-size: 26px;
+    line-height: 40px;
+    font-weight: bold;
+    font-family: 'Josefin Sans', sans-serif;
+}
