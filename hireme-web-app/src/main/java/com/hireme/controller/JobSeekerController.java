@@ -118,6 +118,41 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
+	
+	@PostMapping(value = "/education/{educationId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> updateEducation(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "educationId", required = true) long educationId,
+			@RequestBody EducationModel educationModel) {
+		try {
+			userService.getUser(userId);
+			JobSeeker newJobSeeker = jobSeekerService.getByUserId(userId);
+			List<Education> educationList = newJobSeeker.getEducation();
+			if (educationList == null || educationList.size() == 0) {
+				throw new BusinessException(404, "Nothing to update");
+			}
+			else {
+				for (Education education : educationList) {
+					if(education.getEducationId() == educationId) {
+						education.setDegree(educationModel.getDegree());
+						education.setField(educationModel.getField());
+						education.getPeriod().setFromDate(educationModel.getFrom());
+						education.getPeriod().setToDate(educationModel.getTo());
+						education.setSchoolName(educationModel.getSchoolName());
+						
+						jobSeekerService.update(newJobSeeker);
+						return ResponseEntity.ok(ServiceUtil.buildResponse("educationList",
+								ServiceUtil.getEducaitonList(newJobSeeker.getEducation()), null));
+					}
+				}
+				throw new BusinessException(404, "No educaiotn with id" + educationId + " found to update");
+			}
+			
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
 
 	@DeleteMapping(value = "/education/{educationId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> deleteEducation(@PathVariable(name = "userId", required = true) long userId,
@@ -279,6 +314,36 @@ public class JobSeekerController {
 					}
 				}
 				throw new BusinessException(404, "Nothing to delete.");
+			}
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+	
+
+	@PostMapping(value = "/skill/{skillId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> updateSkill(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "skillId", required = true) long skillId,
+			@RequestBody SkillModel skillModel) {
+		try {
+			userService.getUser(userId);
+			JobSeeker newJobSeeker = jobSeekerService.getByUserId(userId);
+			List<Skill> skillList = newJobSeeker.getSkills();
+			if (skillList == null) {
+				throw new BusinessException(404, "No skills to update.");
+			} else {
+				for (Skill skill : skillList) {
+					if (skill.getSkillId() == skillId) {
+						skill.setSkill(skillModel.getSkill());
+						skill.setNumberOfYears(skillModel.getNumberOfYears());
+						jobSeekerService.update(newJobSeeker);
+						return ResponseEntity.ok(ServiceUtil.buildResponse("skillList",
+								ServiceUtil.getSkillList(newJobSeeker.getSkills()), null));
+					}
+				}
+				throw new BusinessException(404, "No skill with id " + skillId +" found to update.");
 			}
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
