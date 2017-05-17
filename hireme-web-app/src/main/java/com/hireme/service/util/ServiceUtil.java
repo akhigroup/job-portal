@@ -40,7 +40,7 @@ public class ServiceUtil {
 		response.get(key).add(value);
 		return response;
 	}
-	
+
 	public static Map<String, List<WorkExperienceModel>> buildWorkExListResponse(String key, WorkExperienceModel value,
 			Map<String, List<WorkExperienceModel>> response) {
 		if (response == null) {
@@ -50,7 +50,7 @@ public class ServiceUtil {
 		response.get(key).add(value);
 		return response;
 	}
-	
+
 	public static Map<String, List<JobPostModel>> buildJobPostResponse(String key, JobPostModel value,
 			Map<String, List<JobPostModel>> response) {
 		if (response == null) {
@@ -60,7 +60,7 @@ public class ServiceUtil {
 		response.get(key).add(value);
 		return response;
 	}
-	
+
 	public static Map<String, List<SkillModel>> buildSkillListResponse(String key, SkillModel value,
 			Map<String, List<SkillModel>> response) {
 		if (response == null) {
@@ -85,13 +85,13 @@ public class ServiceUtil {
 				Map<String, List<EducationModel>> educationModelList = getEducaitonList(educationList);
 				jobSeekerResponse.setEducationList(educationModelList);
 			}
-			
+
 			List<WorkExperience> workExList = jobSeeker.getWorkExperience();
 			if (workExList != null) {
 				Map<String, List<WorkExperienceModel>> workExModelList = getWorkExList(workExList);
 				jobSeekerResponse.setWorkExperienceList(workExModelList);
 			}
-			
+
 			List<Skill> skillList = jobSeeker.getSkills();
 			if (skillList != null) {
 				Map<String, List<SkillModel>> skillModelList = getSkillList(skillList);
@@ -108,7 +108,7 @@ public class ServiceUtil {
 		}
 		return response;
 	}
-	
+
 	public static Map<String, List<WorkExperienceModel>> getWorkExList(List<WorkExperience> workExList) {
 		Map<String,List<WorkExperienceModel>> response = null;
 		for (WorkExperience workExperience : workExList) {
@@ -116,7 +116,7 @@ public class ServiceUtil {
 		}
 		return response;
 	}
-	
+
 	public static Map<String, List<SkillModel>> getSkillList(List<Skill> skillList) {
 		Map<String,List<SkillModel>> response = null;
 		for (Skill skill : skillList) {
@@ -147,12 +147,14 @@ public class ServiceUtil {
 		education.setSchoolName(educationModel.getSchoolName());
 		return education;
 	}
-	
+
 	public static WorkExperienceModel getWorkExperienceModel(WorkExperience workExperience) {
 		WorkExperienceModel workExperienceModel = new WorkExperienceModel();
 		workExperienceModel.setCompanyName(workExperience.getCompanyName());
-		workExperienceModel.setFrom(workExperience.getPeriod().getFromDate());
-		workExperienceModel.setTo(workExperience.getPeriod().getToDate());
+		if(workExperience.getPeriod() != null) {
+			workExperienceModel.setFrom(workExperience.getPeriod().getFromDate());
+			workExperienceModel.setTo(workExperience.getPeriod().getToDate());
+		}
 		workExperienceModel.setJobTitle(workExperience.getJobTitle());
 		workExperienceModel.setWorkExperienceId(workExperience.getWorkExperienceId());
 		return workExperienceModel;
@@ -167,8 +169,8 @@ public class ServiceUtil {
 		workExperience.setJobTitle(workExperienceModel.getJobTitle());
 		return workExperience;
 	}
-	
-	
+
+
 	public static SkillModel getSkillModel(Skill skill) {
 		SkillModel skillModel = new SkillModel();
 		skillModel.setSkill(skill.getSkill());
@@ -183,7 +185,7 @@ public class ServiceUtil {
 		skill.setSkill(skillModel.getSkill());
 		return skill;
 	}
-	
+
 	public static CompanyModel getCompanyModel(Company company, boolean needAll) {
 		CompanyModel companyModel = new CompanyModel();
 		companyModel.setCompanyId(company.getCompanyId());
@@ -192,7 +194,7 @@ public class ServiceUtil {
 		companyModel.setLogoURL(company.getLogoURL());
 		companyModel.setName(company.getName());
 		companyModel.setWebsite(company.getWebsite());
-		
+
 		if(needAll) {
 			List<JobPost> jobPosts = company.getJobPosts();
 			if (jobPosts != null) {
@@ -202,7 +204,7 @@ public class ServiceUtil {
 		}
 		return companyModel;
 	}
-	
+
 	public static Map<String, List<JobPostModel>> getJobPostList(List<JobPost> jobPosts, boolean needCompany) {
 		Map<String,List<JobPostModel>> response = null;
 		for (JobPost jobPost : jobPosts) {
@@ -219,7 +221,7 @@ public class ServiceUtil {
 		jobPostModel.setSalary(jobPost.getSalary());
 		jobPostModel.setTitle(jobPost.getTitle());
 		jobPostModel.setResponsibilities(jobPost.getResponsibilities());
-		
+
 		if(needCompany) {
 			jobPostModel.setCompany(new HashMap<>());
 			jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));

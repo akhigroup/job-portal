@@ -2,6 +2,7 @@ package com.hireme.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,10 +10,17 @@ import org.springframework.stereotype.Service;
 import com.hireme.dao.CompanyDao;
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Company;
+import com.hireme.model.JobApplication;
+import com.hireme.model.JobInterest;
 import com.hireme.model.JobPost;
+import com.hireme.model.JobSeeker;
 import com.hireme.model.User;
+import com.hireme.model.id.SeekerPostId;
+import com.hireme.repository.JobApplicationRepository;
+import com.hireme.repository.JobInterestRepository;
 import com.hireme.service.CompanyService;
 import com.hireme.service.UserService;
+import com.hireme.service.model.JobApplicationStatus;
 import com.hireme.service.model.JobPostStatus;
 
 @Service("companyService")
@@ -23,6 +31,12 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private JobApplicationRepository jobApplicationRepository;
+	
+	@Autowired
+	private JobInterestRepository jobInterestRepository;
 
 	@Override
 	public Company getByUserId(long userId) throws BusinessException {
@@ -61,9 +75,22 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public void removeJobPost(long companyId, long jobPostId) {
-		// TODO Auto-generated method stub
+	public void removeJobPost(long userId, long jobPostId) throws BusinessException {
+		Company company = getByUserId(userId);
+		List<JobPost> jobPosts = company.getJobPosts();
 
+		if (jobPosts == null) {
+			throw new BusinessException(404, "No job post found with id "+ jobPostId);
+		}
+
+		for(int i=0; i < jobPosts.size(); i++) {
+			if(jobPosts.get(i).getJobPostId() == jobPostId) {
+				jobPosts.remove(i);
+				companyDao.update(company);
+				return;
+			}
+		}
+		throw new BusinessException(404, "No job post found with id "+ jobPostId);
 	}
 
 	@Override
@@ -128,5 +155,38 @@ public class CompanyServiceImpl implements CompanyService {
 			throw new BusinessException(404, "Nojobs posted for company with user Id " + userId);
 		}
 		return jobPosts;
+	}
+
+	@Override
+	public void cancelJobPost(long userId, long jobPostId) throws BusinessException {
+		Company company = getByUserId(userId);
+		List<JobPost> jobPosts = company.getJobPosts();
+
+		if (jobPosts == null) {
+			throw new BusinessException(404, "No job post found with id "+ jobPostId);
+		}
+
+		for(int i=0; i < jobPosts.size(); i++) {
+			if(jobPosts.get(i).getJobPostId() == jobPostId) {
+				Set<JobApplication> appliedJobSeekers =  jobApplicationRepository.findByJobPostId(jobPostId);
+				for (JobApplication jobApplication : appliedJobSeekers) {
+					jobApplication.setStatus(JobApplicationStatus.CANCELLED.name());
+					jobApplicationRepository.save(jobApplication);
+					//TODO send mail
+				}
+				
+				Set<JobInterest> interestedJobSeekers =  jobInterestRepository.findByJobPostId(jobPostId);
+				for (JobInterest jobInterest : interestedJobSeekers) {
+					jobInterestRepository.delete(jobInterest);
+					//TODO send mail
+				}
+				
+				jobPosts.get(i).setStatus(JobPostStatus.CANCELLED.toString());
+				companyDao.update(company);
+				return;
+			}
+		}
+		throw new BusinessException(404, "No job post found with id "+ jobPostId);
+		
 	}
 }

@@ -161,4 +161,26 @@ public class JobSeeker {
 	public void setInterests(List<JobPost> interests) {
 		this.interests = interests;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (jobSeekerId ^ (jobSeekerId >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JobSeeker other = (JobSeeker) obj;
+		if (jobSeekerId != other.jobSeekerId)
+			return false;
+		return true;
+	}
 }

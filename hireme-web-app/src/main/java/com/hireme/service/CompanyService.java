@@ -14,7 +14,9 @@ public interface CompanyService {
 	
 	void remove(long companyId) throws BusinessException;
 		
-	void removeJobPost(long companyId, long jobPostId);
+	void removeJobPost(long userId, long jobPostId) throws BusinessException;
+	
+	void cancelJobPost(long userId, long jobPostId) throws BusinessException;
 	
 	Company updateJobPost(long companyId, JobPost jobPost);
 

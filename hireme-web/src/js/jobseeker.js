@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
     var url = "http://localhost:8080/2/jobseeker";
 
     var formWorkEx = '<form id="workExFormIdworkExID" name="workExForm" class="form-horizontal">' +
@@ -251,6 +251,61 @@ $(function () {
         'data-target="#showInterestedJobModalJobPostID" data-toggle="modal" ' +
         '>JobTitle</a>';
 
+
+    $("#profilePicture").change(function () {
+        file =$(this).prop('files')[0];
+        reader = new FileReader();
+        reader.onloadend = function() {
+            pictureVal = reader.result;
+            $("#seekerProfileImage").attr("src", pictureVal);
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val(),
+                    summary: $("#summary").val(),
+                    picture : pictureVal.replace("data:image/jpeg;base64,", "")
+                }),
+                success: function () {
+                    console.log("Post done successfully")
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    $("#seekerProfileImage").click(function (e) {
+        $("#profilePicture").click();
+    });
+
+
+    //Update Profile
+    $("#updateJobSeekerProfile").click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                summary: $("#summary").val()
+            }),
+            success: function (data) {
+                console.log("Post done successfully")
+            }
+        });
+    });
+
+
+
     //Add new Work Ex
     $('#newWorkExAdd').click(function (e) {
         e.preventDefault();
@@ -261,67 +316,13 @@ $(function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: JSON.stringify({
-                jobTitle: $("#newTitle").val(),
-                companyName: $("#newCompanyName").val(),
+                firstName: $("#newTitle").val(),
+                lastName: $("#newCompanyName").val(),
                 from: $("#newFrom").val(),
-                to: $("#newTill").val()
+                summary: $("#newTill").val()
             }),
             success: function (data) {
 
-                object = jQuery.parseJSON(JSON.stringify(data));
-                workExperienceList = object.workExperienceList.workExperience;
-                i = 0;
-                for (i = 0; workExperienceList.length > i; i++) {
-                    workExId = workExperienceList[i].workExperienceId;
-                    thisForm = formWorkEx.replace(/workExID/g, workExId);
-                    if ($("#workExFormId" + workExId).length == 0) {
-                        $("#workEx").append(thisForm);
-                    }
-                    $("#title" + workExId).val(workExperienceList[i].jobTitle);
-                    $("#companyName" + workExId).val(workExperienceList[i].companyName);
-                    $("#from" + workExId).val(workExperienceList[i].from);
-                    $("#till" + workExId).val(workExperienceList[i].to);
-
-                    //Event handlers for delete button
-                    $("#workExDelete" + workExId).click(function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        workExButId = $(this).attr('id');
-                        workExButId = workExButId.replace("workExDelete", "");
-                        url = "http://localhost:8080/2/jobseeker";
-                        $.ajax({
-                            url: url + "/workex/" + workExButId,
-                            type: "DELETE",
-                            success: function () {
-                                $("#workExFormId" + workExButId).remove();
-                            }
-                        });
-                    });
-
-                    //Event handlers for update button
-                    $("#workExUpdate" + workExId).click(function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        workExButId = $(this).attr('id');
-                        workExButId = workExButId.replace("workExUpdate", "");
-                        $.ajax({
-                            url: url + "/workex/" + workExButId,
-                            type: "POST",
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            data: JSON.stringify({
-                                jobTitle: $("#title" + workExButId).val(),
-                                companyName: $("#companyName" + workExButId).val(),
-                                from: $("#from" + workExButId).val(),
-                                to: $("#till" + workExButId).val()
-                            }),
-                            success: function () {
-                            }
-                        });
-                    });
-                }
-
-                $("#closeAddWorkEx").click();
             }
         });
     });
@@ -662,7 +663,7 @@ $(function () {
         if (currentTab == '3') {
             $.get(url + "/job/application", function (data, status) {
                 object = jQuery.parseJSON(JSON.stringify(data));
-                jobPosts = object.jobPosts.jobPost;
+                jobPosts = object.jobPosts;
                 i = 0;
                 for (i = 0; jobPosts.length > i; i++) {
                     jobPostId = jobPosts[i].jobPostId;

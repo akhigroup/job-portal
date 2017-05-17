@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,6 +92,19 @@ public class CompanyController {
 		try {
 			List<JobPost> jobPosts = companyService.updateJobPost(userId, jobId, jobPost);
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, false), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+	
+	@DeleteMapping(value = "/job/{jobId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> cancelJobPost(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobId", required = true) long jobId) {
+		try {
+			companyService.cancelJobPost(userId, jobId);
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(companyService.getJobPosts(userId), false), null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
