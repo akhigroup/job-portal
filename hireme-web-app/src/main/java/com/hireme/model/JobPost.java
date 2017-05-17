@@ -32,7 +32,7 @@ public class JobPost {
 	private long salary;
 	
 	@Column(name = "status")
-	private String status;
+	private String jobPostStatus;
 	
 	@Column(name = "responsibilities")
 	private String responsibilities;
@@ -81,12 +81,12 @@ public class JobPost {
 		this.salary = salary;
 	}
 	
-	public String getStatus() {
-		return status;
+	public String getJobPostStatus() {
+		return jobPostStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setJobPostStatus(String jobPostStatus) {
+		this.jobPostStatus = jobPostStatus;
 	}
 
 	public Company getCompany() {

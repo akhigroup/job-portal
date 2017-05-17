@@ -13,9 +13,7 @@ import com.hireme.model.Company;
 import com.hireme.model.JobApplication;
 import com.hireme.model.JobInterest;
 import com.hireme.model.JobPost;
-import com.hireme.model.JobSeeker;
 import com.hireme.model.User;
-import com.hireme.model.id.SeekerPostId;
 import com.hireme.repository.JobApplicationRepository;
 import com.hireme.repository.JobInterestRepository;
 import com.hireme.service.CompanyService;
@@ -109,7 +107,7 @@ public class CompanyServiceImpl implements CompanyService {
 			company.setJobPosts(jobPosts);
 		}
 		jobPost.setCompany(company);
-		jobPost.setStatus(JobPostStatus.OPEN.name());
+		jobPost.setJobPostStatus(JobPostStatus.OPEN.name());
 		jobPosts.add(jobPost);
 		company = companyDao.update(company);
 		return company.getJobPosts();
@@ -131,19 +129,24 @@ public class CompanyServiceImpl implements CompanyService {
 				currentJobPost.setLocation(jobPost.getLocation());
 				currentJobPost.setSalary(jobPost.getSalary());
 				currentJobPost.setTitle(jobPost.getTitle());
-				JobPostStatus newStatus = JobPostStatus.valueOf(jobPost.getStatus());
-				JobPostStatus currentStatus = JobPostStatus.valueOf(currentJobPost.getStatus());
+				JobPostStatus newStatus = JobPostStatus.valueOf(jobPost.getJobPostStatus());
+				JobPostStatus currentStatus = JobPostStatus.valueOf(currentJobPost.getJobPostStatus());
 
 				if(currentStatus != newStatus) {
-					currentJobPost.setStatus(newStatus.name());
+					currentJobPost.setJobPostStatus(newStatus.name());
+					if(newStatus == JobPostStatus.CANCELLED) {
+						cancelJobPost(userId, jobId);
+					}
+					
 					if(newStatus != JobPostStatus.OPEN) {
 						//TODO update interested and applied jobs and send mail 
 					}
 				}	
+				company = companyDao.update(company);
+				return company.getJobPosts();
 			}
 		}
-		company = companyDao.update(company);
-		return company.getJobPosts();
+		throw new BusinessException(404, "No job post found with id "+ jobId);
 	}
 
 	@Override
@@ -181,12 +184,11 @@ public class CompanyServiceImpl implements CompanyService {
 					//TODO send mail
 				}
 				
-				jobPosts.get(i).setStatus(JobPostStatus.CANCELLED.toString());
+				jobPosts.get(i).setJobPostStatus(JobPostStatus.CANCELLED.toString());
 				companyDao.update(company);
 				return;
 			}
 		}
 		throw new BusinessException(404, "No job post found with id "+ jobPostId);
-		
 	}
 }

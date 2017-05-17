@@ -226,7 +226,7 @@ public class ServiceUtil {
 			jobPostModel.setCompany(new HashMap<>());
 			jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
 		} else {
-			jobPostModel.setJobPostStatus(jobPost.getStatus());
+			jobPostModel.setJobPostStatus(jobPost.getJobPostStatus());
 		}
 		return jobPostModel;
 	}
