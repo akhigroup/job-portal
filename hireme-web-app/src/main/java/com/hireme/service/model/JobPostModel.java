@@ -1,5 +1,9 @@
 package com.hireme.service.model;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class JobPostModel {
 
 	private long jobPostId;
@@ -13,6 +17,9 @@ public class JobPostModel {
 	private long salary;
 	
 	private String responsibilities;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Map<String, CompanyModel> company;
 
 	public long getJobPostId() {
 		return jobPostId;
@@ -60,5 +67,13 @@ public class JobPostModel {
 
 	public void setResponsibilities(String responsibilities) {
 		this.responsibilities = responsibilities;
+	}
+
+	public Map<String, CompanyModel> getCompany() {
+		return company;
+	}
+
+	public void setCompany(Map<String, CompanyModel> company) {
+		this.company = company;
 	}
 }

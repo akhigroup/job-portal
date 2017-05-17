@@ -16,6 +16,7 @@ import com.hireme.repository.JobApplicationRepository;
 import com.hireme.repository.JobInterestRepository;
 import com.hireme.service.JobSeekerService;
 import com.hireme.service.JobService;
+import com.hireme.service.model.JobApplicationStatus;
 
 @Service("jobService")
 public class JobServiceImpl implements JobService {
@@ -36,26 +37,35 @@ public class JobServiceImpl implements JobService {
 	public JobPost get(long jobPostId) throws BusinessException {
 		return jobPostDao.get(jobPostId);
 	}
-	
+
 	@Override
 	public void apply(long jobSeekerId, long jobPostId) throws BusinessException {
 		//to check if jobSeeker and jobPost are valid do a get
 		jobSeekerService.get(jobSeekerId);
 		jobPostDao.get(jobPostId);
 
-		JobApplication jobApplication = new JobApplication();
-		jobApplication.setJobSeekerId(jobSeekerId);
-		jobApplication.setJobPostId(jobPostId);
-		jobApplicationRepository.save(jobApplication);
+		SeekerPostId seekerPostId = new SeekerPostId();
+		seekerPostId.setJobPostId(jobPostId);
+		seekerPostId.setJobSeekerId(jobSeekerId);
+		if(!jobApplicationRepository.exists(seekerPostId)) {
+			System.out.println("Doesnt exists");
+			JobApplication jobApplication = new JobApplication();
+			jobApplication.setJobSeekerId(jobSeekerId);
+			jobApplication.setJobPostId(jobPostId);
+			jobApplication.setStatus(JobApplicationStatus.PENDING.name());
+			jobApplicationRepository.save(jobApplication);
+		} else {
+			throw new BusinessException(400, "You have already appied for this job");
+		}
 	}
-	
+
 	@Override
 	public List<JobPost> getApplications(long jobSeekerId) throws BusinessException {
 		//to check if jobSeeker and jobPost are valid do a get
 		JobSeeker jobSeeker = jobSeekerService.get(jobSeekerId);
 		return jobSeeker.getApplication();
 	}
-	
+
 	@Override
 	public void withdraw(long jobSeekerId, long jobPostId) throws BusinessException {
 		SeekerPostId seekerPostId = new SeekerPostId();
@@ -92,7 +102,7 @@ public class JobServiceImpl implements JobService {
 		} else {
 			throw new BusinessException(404, "No such job intrest to remove");
 		}
-		
+
 	}
 
 	@Override

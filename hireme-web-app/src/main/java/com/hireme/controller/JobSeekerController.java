@@ -359,7 +359,9 @@ public class JobSeekerController {
 			userService.getUser(userId);
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			jobService.apply(jobSeeker.getJobSeekerId(), jobPostId);
-			return ResponseEntity.ok("");
+			List<JobPost> jobPosts = jobSeeker.getApplication();
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
+					ServiceUtil.getJobPostList(jobPosts), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -367,7 +369,7 @@ public class JobSeekerController {
 		}
 	}
 	
-	@DeleteMapping(value = "/job/{jobPostId}/application", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@DeleteMapping(value = "/job/{jobPostId}/application")
 	public ResponseEntity<Object> withdrawJobApplication(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
 		try {
@@ -398,7 +400,7 @@ public class JobSeekerController {
 	}
 	
 	
-	@PostMapping(value = "/job/{jobPostId}/interest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(value = "/job/{jobPostId}/interest")
 	public ResponseEntity<Object> addIntrestJob(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
 		try {
@@ -413,7 +415,7 @@ public class JobSeekerController {
 		}
 	}
 	
-	@DeleteMapping(value = "/job/{jobPostId}/intrest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@DeleteMapping(value = "/job/{jobPostId}/interest")
 	public ResponseEntity<Object> removeJobIntrest(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
 		try {
@@ -428,7 +430,7 @@ public class JobSeekerController {
 		}
 	}
 	
-	@GetMapping(value = "/job/intrest", produces = { MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(value = "/job/interest", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> getJobIntrest(@PathVariable(name = "userId", required = true) long userId) {
 		try {
 			userService.getUser(userId);

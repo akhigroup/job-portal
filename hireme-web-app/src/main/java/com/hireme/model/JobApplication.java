@@ -20,6 +20,9 @@ public class JobApplication {
 	@Id
 	@Column(name = "job_post_id")
 	private long jobPostId;
+	
+	@Column(name = "status")
+	private String status;
 
 	public long getJobSeekerId() {
 		return jobSeekerId;
@@ -35,6 +38,14 @@ public class JobApplication {
 
 	public void setJobPostId(long jobPostId) {
 		this.jobPostId = jobPostId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override

@@ -219,6 +219,9 @@ public class ServiceUtil {
 		jobPostModel.setSalary(jobPost.getSalary());
 		jobPostModel.setTitle(jobPost.getTitle());
 		jobPostModel.setResponsibilities(jobPost.getResponsibilities());
+		
+		jobPostModel.setCompany(new HashMap<>());
+		jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
 		return jobPostModel;
 	}
 }

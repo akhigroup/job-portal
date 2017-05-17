@@ -13,7 +13,7 @@ import com.hireme.model.JobPost;
 import com.hireme.model.User;
 import com.hireme.service.CompanyService;
 import com.hireme.service.UserService;
-import com.hireme.service.model.JobStatus;
+import com.hireme.service.model.JobPostStatus;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyService {
@@ -82,7 +82,7 @@ public class CompanyServiceImpl implements CompanyService {
 			company.setJobPosts(jobPosts);
 		}
 		jobPost.setCompany(company);
-		jobPost.setStatus(JobStatus.OPEN.name());
+		jobPost.setStatus(JobPostStatus.OPEN.name());
 		jobPosts.add(jobPost);
 		company = companyDao.update(company);
 		return company.getJobPosts();
@@ -104,12 +104,12 @@ public class CompanyServiceImpl implements CompanyService {
 				currentJobPost.setLocation(jobPost.getLocation());
 				currentJobPost.setSalary(jobPost.getSalary());
 				currentJobPost.setTitle(jobPost.getTitle());
-				JobStatus newStatus = JobStatus.valueOf(jobPost.getStatus());
-				JobStatus currentStatus = JobStatus.valueOf(currentJobPost.getStatus());
+				JobPostStatus newStatus = JobPostStatus.valueOf(jobPost.getStatus());
+				JobPostStatus currentStatus = JobPostStatus.valueOf(currentJobPost.getStatus());
 
 				if(currentStatus != newStatus) {
 					currentJobPost.setStatus(newStatus.name());
-					if(newStatus != JobStatus.OPEN) {
+					if(newStatus != JobPostStatus.OPEN) {
 						//TODO update interested and applied jobs and send mail 
 					}
 				}	
