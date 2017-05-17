@@ -25,5 +25,5 @@ public interface CompanyService {
 	List<JobPost> postJob(long userId, JobPost jobPost) throws BusinessException;
 
 	List<JobPost> updateJobPost(long userId, long jobId, JobPost jobPost) throws BusinessException;
-
+	
 }

@@ -462,4 +462,18 @@ public class JobSeekerController {
 		}
 	}
 	
+	@GetMapping(value = "/job/{queryString}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> searchJobPost(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "queryString", required = true) String queryString) {
+		try {
+			System.out.println(queryString);
+			List<JobPost> jobPosts = jobService.searchJobs(queryString);
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, true), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+	
 }

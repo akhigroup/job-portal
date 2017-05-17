@@ -192,4 +192,5 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		throw new BusinessException(404, "No job post found with id "+ jobPostId);
 	}
+
 }

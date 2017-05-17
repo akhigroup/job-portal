@@ -19,6 +19,7 @@ import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Company;
 import com.hireme.model.JobPost;
 import com.hireme.service.CompanyService;
+import com.hireme.service.JobService;
 import com.hireme.service.model.CompanyModel;
 import com.hireme.service.model.Response;
 import com.hireme.service.util.ServiceUtil;
@@ -31,6 +32,9 @@ public class CompanyController {
 	
 	@Autowired
 	private CompanyService companyService;
+	
+	@Autowired
+	private JobService jobService;
 	
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> createOrUpdateCompany(@PathVariable(name = "userId", required = true) long userId,
@@ -105,6 +109,19 @@ public class CompanyController {
 		try {
 			companyService.cancelJobPost(userId, jobId);
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(companyService.getJobPosts(userId), false), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+	
+	@GetMapping(value = "/job/{queryString}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> searchJobPost(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "queryString", required = true) String queryString) {
+		try {
+			List<JobPost> jobPosts = jobService.searchJobs(queryString);
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),

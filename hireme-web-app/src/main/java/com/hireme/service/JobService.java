@@ -21,4 +21,6 @@ public interface JobService {
 	
 	List<JobPost> getIntrests(long jobSeekerId) throws BusinessException;
 	
+	List<JobPost> searchJobs(String queryString) throws BusinessException;
+	
 }

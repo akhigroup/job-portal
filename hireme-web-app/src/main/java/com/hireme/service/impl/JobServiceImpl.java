@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hireme.dao.JobPostDao;
 import com.hireme.exceptions.BusinessException;
@@ -109,5 +110,11 @@ public class JobServiceImpl implements JobService {
 	public List<JobPost> getIntrests(long jobSeekerId) throws BusinessException {
 		JobSeeker jobSeeker = jobSeekerService.get(jobSeekerId);
 		return jobSeeker.getInterests();
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<JobPost> searchJobs(String queryString) throws BusinessException {
+		return jobPostDao.search(queryString);
 	}
 }
