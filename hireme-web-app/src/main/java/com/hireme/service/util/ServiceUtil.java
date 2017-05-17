@@ -131,8 +131,10 @@ public class ServiceUtil {
 		educationModel.setDegree(education.getDegree());
 		educationModel.setEducationId(education.getEducationId());
 		educationModel.setField(education.getField());
-		educationModel.setFrom(education.getPeriod().getFromDate());
-		educationModel.setTo(education.getPeriod().getToDate());
+		if(education.getPeriod()!= null) {
+			educationModel.setFrom(education.getPeriod().getFromDate());
+			educationModel.setTo(education.getPeriod().getToDate());
+		}
 		educationModel.setSchoolName(education.getSchoolName());
 		return educationModel;
 	}
