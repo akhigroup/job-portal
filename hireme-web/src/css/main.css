@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,600,400italic);
 
-#seekerProfileImage{
+#seekerProfileImage, #companyProfileImage{
     width: 120px;
     height: 120px;
     background-size: cover;
@@ -10,7 +10,7 @@
     -moz-border-radius: 100px;
 }
 
-#addWorkExImg, #addEducationImg, #addSkillImg{
+#addWorkExImg, #addEducationImg, #addSkillImg, #addJobPostImg{
     width: 25px;
     height: 25px;
     background-size: cover;
@@ -32,4 +32,28 @@ span {
     line-height: 40px;
     font-weight: bold;
     font-family: 'Josefin Sans', sans-serif;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #317aa8;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
 }

@@ -2,9 +2,182 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Company page</title>
+    <title>Company</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+<div class="container-fluid" class="col-xs-12">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="container">
+                <ul class="nav nav-tabs ">
+                    <li class="active">
+                        <a id="Home" href="#1" data-toggle="tab">Home</a>
+                    </li>
+                    <li>
+                        <a id="Profile" href="#2" data-toggle="tab">Profile</a>
+                    </li>
+                    <li>
+                        <a id="Applications" href="#3" data-toggle="tab">Applications</a>
+                    </li>
+                    <li>
+                        <a id="Extra" href="#4" data-toggle="tab">Extra</a>
+                    </li>
+                </ul>
+                <div class="tab-content col-xs-12">
+                    <div class="tab-pane active" id="1">
+                    </div>
+                    <div class="tab-pane" id="2">
+                        <br><br>
+                        <div class="panel panel-default">
+                            <div class="row">
+                                <div class="panel-body">
+                                    <img id="companyProfileImage" src="img/profile.jpg">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <span>Profile</span>
+                                    <form id="profileForm" class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="name">Company : </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="name"
+                                                       placeholder="Company">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="website">Website : </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="website"
+                                                       placeholder="Website">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="location">Location : </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="location"
+                                                       placeholder="Location">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2"
+                                                   for="description">Description : </label>
+                                            <div class="col-xs-10">
+                                                <textarea class="form-control" id="description"
+                                                          placeholder="Description..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="logoUrl">Logo URL : </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="logoUrl"
+                                                       placeholder="Logo URL">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="updateCompanyProfile"></label>
+                                            <div class="col-xs-10">
+                                                <button id="updateCompanyProfile" class="btn btn-info">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <!--Modal box-->
+                                    <div class="modal" id="addJobPost" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content no 1-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" id="closeAddJobPost" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title text-center form-title">Add Post
+                                                        Job</h4>
+                                                </div>
+                                                <div class="modal-body padtrbl">
+                                                    <form id="newJobPostFormId" name="jobPostForm"
+                                                          class="form-horizontal">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4" for="newTitle">Job
+                                                                Title : </label>
+                                                            <div class="col-xs-8">
+                                                                <input type="text" class="form-control" id="newTitle"
+                                                                       placeholder="Job Title">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4" for="newLocation">Location
+                                                                : </label>
+                                                            <div class="col-xs-8">
+                                                                <input type="text" class="form-control" id="newLocation"
+                                                                       placeholder="Location">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4" for="newDescription">Description
+                                                                : </label>
+                                                            <div class="col-xs-8">
+                                                                <textarea class="form-control" id="newDescription"
+                                                                          placeholder="Description..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4"
+                                                                   for="newResponsibilities">Responsibilities
+                                                                : </label>
+                                                            <div class="col-xs-8">
+                                                                <textarea class="form-control" id="newResponsibilities"
+                                                                          placeholder="Responsibilities..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4" for="newSalary">Salary
+                                                                : </label>
+                                                            <div class="col-xs-8">
+                                                                <input type="text" class="form-control" id="newSalary"
+                                                                       placeholder="Salary">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-4"
+                                                                   for="newJobPostAdd"></label>
+                                                            <div class="col-xs-8">
+                                                                <button id="newJobPostAdd" class="btn btn-success">Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--/ Modal box-->
+                                    <span>Posted Jobs <img id="addJobPostImg" src="img/plus.png" href="#"
+                                                           data-target="#addJobPost" data-toggle="modal"
+                                                           style="float: right; position: relative"></span>
+                                    <div id="jobPosted">
 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane " id="3">
+                    </div>
+                    <div class="tab-pane " id="4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="js/company.js"></script>
 </body>
 </html>
