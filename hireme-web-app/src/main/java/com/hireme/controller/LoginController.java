@@ -73,8 +73,9 @@ public class LoginController {
 	}
 
 	@RequestMapping(value="/admin/home", method = RequestMethod.GET)
-	public ModelAndView home(){
+	public ModelAndView homeAdmin(){
 		ModelAndView modelAndView = new ModelAndView();
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user;
 		try {
@@ -82,6 +83,31 @@ public class LoginController {
 			modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 			modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
 			modelAndView.setViewName("admin/home");
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value="/jobseeker/jobseeker", method = RequestMethod.GET)
+	public ModelAndView homeJobseeker(){
+		ModelAndView modelAndView = new ModelAndView();
+		//user = userService.getUser(auth.getName());
+		//modelAndView.addObject("userName", "user.getEmail()");
+		modelAndView.setViewName("jobseeker/jobseeker");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value="/company/company", method = RequestMethod.GET)
+	public ModelAndView homeCompany(){
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user;
+		try {
+			user = userService.getUser(auth.getName());
+			modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+			modelAndView.setViewName("company/company");
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

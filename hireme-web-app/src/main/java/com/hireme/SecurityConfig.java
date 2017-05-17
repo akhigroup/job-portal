@@ -24,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Autowired
+    CustomSuccessHandler customSuccessHandler;
+	
+	@Autowired
 	private DataSource dataSource;
 
 	@Value("${spring.queries.users-query}")
@@ -43,23 +46,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.passwordEncoder(getBCryptPasswordEncoder());
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-		.antMatchers("/").permitAll()
-		.antMatchers("/login").permitAll()
-		.antMatchers("/registration").permitAll()
-		.antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
-		.authenticated().and().csrf().disable().formLogin()
-		.loginPage("/login").failureUrl("/login?error=true")
-		.defaultSuccessUrl("/admin/home")
-		.usernameParameter("email")
-		.passwordParameter("password")
-		.and().logout()
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.logoutSuccessUrl("/").and().exceptionHandling()
-		.accessDeniedPage("/access-denied");
-	}
+	 @Override
+	    protected void configure(HttpSecurity http) throws Exception {
+	      http.authorizeRequests()
+	        .antMatchers("/", "/login").permitAll()
+	        .antMatchers("/registration").permitAll()
+	        .antMatchers("/admin/**").access("hasRole('ADMIN')")
+	        .antMatchers("/jobseeker/**").access("hasRole('JOBSEEKER')")
+	        .antMatchers("/company/**").access("hasRole('COMPANY')")
+	        .and().formLogin().loginPage("/login").successHandler(customSuccessHandler)
+	        .usernameParameter("email").passwordParameter("password")
+	        .and().logout()
+			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutSuccessUrl("/").and().exceptionHandling()
+			.accessDeniedPage("/access-denied");
+	    }
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
