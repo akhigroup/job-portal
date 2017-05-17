@@ -8,236 +8,295 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="container-fluid" class="col-xs-12">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="container">
-                    <ul class="nav nav-tabs ">
-                        <li class="active">
-                            <a id="Home" href="#1" data-toggle="tab">Home</a>
-                        </li>
-                        <li>
-                            <a id="Profile" href="#2" data-toggle="tab">Profile</a>
-                        </li>
-                        <li>
-                            <a id="AppliedJobs" href="#3" data-toggle="tab">Applied Jobs</a>
-                        </li>
-                        <li>
-                            <a id="FavoriteJobs" href="#4" data-toggle="tab">Favorite Jobs</a>
-                        </li>
-                    </ul>
+<div class="container-fluid col-xs-12">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a id="Home" href="#1" data-toggle="tab">Home</a>
+                    </li>
+                    <li>
+                        <a id="Profile" href="#2" data-toggle="tab">Profile</a>
+                    </li>
+                    <li>
+                        <a id="AppliedJobs" href="#3" data-toggle="tab">Applied Jobs</a>
+                    </li>
+                    <li>
+                        <a id="FavoriteJobs" href="#4" data-toggle="tab">Favorite Jobs</a>
+                    </li>
+                </ul>
 
-                    <div class="tab-content col-xs-12">
-                        <div class="tab-pane active" id="1">
-                        </div>
-                        <div class="tab-pane" id="2">
-                            <div class="panel panel-default">
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <img id="seekerProfileImage" src="img/profile.jpg">
-                                    </div>
+                <div class="tab-content col-xs-12">
+                    <div class="tab-pane active" id="1">
+                    </div>
+                    <div class="tab-pane" id="2">
+                        <br><br>
+                        <div class="panel panel-default">
+                            <div class="row">
+                                <div class="panel-body">
+                                    <img id="seekerProfileImage" src="img/profile.jpg">
                                 </div>
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <span>Profile</span>
-                                        <form id="profileForm" class="form-horizontal">
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-2" for="firstName" >First name: </label>
-                                                <div class="col-xs-10">
-                                                    <input type="text" class="form-control" id="firstName" placeholder="First name">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-2" for="lastName">Last name: </label>
-                                                <div class="col-xs-10">
-                                                    <input type="text" class="form-control" id="lastName" placeholder="Last name">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-xs-2" for="summary">Summary : </label>
-                                                <div class="col-xs-10">
-                                                    <textarea class="form-control" id="summary" placeholder="Summary..."></textarea>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <!--Modal box-->
-                                        <div class="modal" id="addWorkEx" role="dialog">
-                                            <div class="modal-dialog">
-                                                <!-- Modal content no 1-->
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" id="closeAddWorkEx" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title text-center form-title">Add Work Experience</h4>
-                                                    </div>
-                                                    <div class="modal-body padtrbl">
-                                                        <form id="newWorkExFormId" name="workExForm" class="form-horizontal">
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newTitle" >Job Title: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newTitle" placeholder="Job Title">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newCompanyName">Company name: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newCompanyName" placeholder="Company name">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newFrom">From : </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="date" class="form-control" id="newFrom" placeholder="From date">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newTill">To : </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="date" class="form-control" id="newTill" placeholder="Till">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newWorkExAdd"></label>
-                                                                <div class="col-xs-10">
-                                                                    <button id="newWorkExAdd" class="btn btn-success">Add</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <span>Profile</span>
+                                    <form id="profileForm" class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="firstName">First name: </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="firstName"
+                                                       placeholder="First name">
                                             </div>
                                         </div>
-                                        <!--/ Modal box-->
-                                        <span>Work experience <img id="addWorkExImg" src="img/plus.png" href="#" data-target="#addWorkEx" data-toggle="modal" style="float: right; position: relative"></span>
-
-                                        <div id="workEx">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <!--Modal box-->
-                                        <div class="modal" id="addEducation" role="dialog">
-                                            <div class="modal-dialog">
-                                                <!-- Modal content no 1-->
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" id="closeAddEducation" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title text-center form-title">Add Education</h4>
-                                                    </div>
-                                                    <div class="modal-body padtrbl">
-                                                        <form id="newEducationFormId" name="educationForm" class="form-horizontal">
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newSchool" >School/University: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newSchool" placeholder="School/University name">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newDegree">Degree: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newDegree" placeholder="Degree">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newField">Field: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newField" placeholder="Field">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newEduFrom">From : </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="date" class="form-control" id="newEduFrom" placeholder="From date">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newEduTill">To : </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="date" class="form-control" id="newEduTill" placeholder="Till">
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newWorkExAdd"></label>
-                                                                <div class="col-xs-10">
-                                                                    <button id="newEducationAdd" class="btn btn-success">Add</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="lastName">Last name: </label>
+                                            <div class="col-xs-10">
+                                                <input type="text" class="form-control" id="lastName"
+                                                       placeholder="Last name">
                                             </div>
                                         </div>
-                                        <!--/ Modal box-->
-                                        <span>Education <img id="addEducationImg" src="img/plus.png" href="#" data-target="#addEducation" data-toggle="modal" style="float: right; position: relative"></span>
-
-                                        <div id="education">
-
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="summary">Summary : </label>
+                                            <div class="col-xs-10">
+                                                <textarea class="form-control" id="summary"
+                                                          placeholder="Summary..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-xs-2" for="summary"></label>
+                                            <div class="col-xs-10">
+                                                <button class="form-control" id="updateJobSeekerProfile"
+                                                          >Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <!--Modal box-->
+                                    <div class="modal" id="addWorkEx" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content no 1-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" id="closeAddWorkEx" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title text-center form-title">Add Work
+                                                        Experience</h4>
+                                                </div>
+                                                <div class="modal-body padtrbl">
+                                                    <form id="newWorkExFormId" name="workExForm"
+                                                          class="form-horizontal">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newTitle">Job
+                                                                Title: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control" id="newTitle"
+                                                                       placeholder="Job Title">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newCompanyName">Company
+                                                                name: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control"
+                                                                       id="newCompanyName" placeholder="Company name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newFrom">From
+                                                                : </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="date" class="form-control" id="newFrom"
+                                                                       placeholder="From date">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newTill">To
+                                                                : </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="date" class="form-control" id="newTill"
+                                                                       placeholder="Till">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2"
+                                                                   for="newWorkExAdd"></label>
+                                                            <div class="col-xs-10">
+                                                                <button id="newWorkExAdd" class="btn btn-success">Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <!--/ Modal box-->
+                                    <span>Work experience <img id="addWorkExImg" src="img/plus.png" href="#"
+                                                               data-target="#addWorkEx" data-toggle="modal"
+                                                               style="float: right; position: relative"></span>
+
+                                    <div id="workEx">
+
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="panel-body">
-                                        <!--Modal box-->
-                                        <div class="modal" id="addSkill" role="dialog">
-                                            <div class="modal-dialog">
-                                                <!-- Modal content no 1-->
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" id="closeAddSkill" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title text-center form-title">Add Skill</h4>
-                                                    </div>
-                                                    <div class="modal-body padtrbl">
-                                                        <form id="newSkillFormId" name="educationForm" class="form-horizontal">
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newSkill" >Skill: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" id="newSkill" placeholder="Skill name">
-                                                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <!--Modal box-->
+                                    <div class="modal" id="addEducation" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content no 1-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" id="closeAddEducation" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title text-center form-title">Add Education</h4>
+                                                </div>
+                                                <div class="modal-body padtrbl">
+                                                    <form id="newEducationFormId" name="educationForm"
+                                                          class="form-horizontal">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newSchool">School/University: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control" id="newSchool"
+                                                                       placeholder="School/University name">
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newYearsOfExp">Degree: </label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="number" class="form-control" id="newYearsOfExp" placeholder="0-10">
-                                                                </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newDegree">Degree: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control" id="newDegree"
+                                                                       placeholder="Degree">
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2" for="newSkillAdd"></label>
-                                                                <div class="col-xs-10">
-                                                                    <button id="newSkillAdd" class="btn btn-success">Add</button>
-                                                                </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2"
+                                                                   for="newField">Field: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control" id="newField"
+                                                                       placeholder="Field">
                                                             </div>
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newEduFrom">From
+                                                                : </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="date" class="form-control" id="newEduFrom"
+                                                                       placeholder="From date">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newEduTill">To
+                                                                : </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="date" class="form-control" id="newEduTill"
+                                                                       placeholder="Till">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2"
+                                                                   for="newWorkExAdd"></label>
+                                                            <div class="col-xs-10">
+                                                                <button id="newEducationAdd" class="btn btn-success">
+                                                                    Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--/ Modal box-->
-                                        <span>Skills <img id="addSkillImg" src="img/plus.png" href="#" data-target="#addSkill" data-toggle="modal" style="float: right; position: relative"></span>
+                                    </div>
+                                    <!--/ Modal box-->
+                                    <span>Education <img id="addEducationImg" src="img/plus.png" href="#"
+                                                         data-target="#addEducation" data-toggle="modal"
+                                                         style="float: right; position: relative"></span>
 
-                                        <div id="skill">
+                                    <div id="education">
 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="panel-body">
+                                    <!--Modal box-->
+                                    <div class="modal" id="addSkill" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content no 1-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" id="closeAddSkill" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title text-center form-title">Add Skill</h4>
+                                                </div>
+                                                <div class="modal-body padtrbl">
+                                                    <form id="newSkillFormId" name="educationForm"
+                                                          class="form-horizontal">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2"
+                                                                   for="newSkill">Skill: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="text" class="form-control" id="newSkill"
+                                                                       placeholder="Skill name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2" for="newYearsOfExp">Degree: </label>
+                                                            <div class="col-xs-10">
+                                                                <input type="number" class="form-control"
+                                                                       id="newYearsOfExp" placeholder="0-10">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-xs-2"
+                                                                   for="newSkillAdd"></label>
+                                                            <div class="col-xs-10">
+                                                                <button id="newSkillAdd" class="btn btn-success">Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <!--/ Modal box-->
+                                    <span>Skills <img id="addSkillImg" src="img/plus.png" href="#"
+                                                      data-target="#addSkill" data-toggle="modal"
+                                                      style="float: right; position: relative"></span>
+
+                                    <div id="skill">
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="3">
+                    </div>
+                    <div class="tab-pane" id="3">
+                        <br><br>
+                        <div class="panel panel-default">
+                            <div id="appliedJobsDiv" class="list-group">
+                            </div>
                         </div>
-                        <div class="tab-pane" id="4">
+                    </div>
+                    <div class="tab-pane" id="4">
+                        <br><br>
+                        <div class="panel panel-default">
+                            <div id="interestedJobsDiv" class="list-group">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="js/jobseeker.js"></script>
 </body>
 </html>
