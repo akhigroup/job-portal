@@ -20,7 +20,13 @@ public class JobPostModel {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Map<String, CompanyModel> company;
-
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String applicationStatus;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String jobPostStatus;
+	
 	public long getJobPostId() {
 		return jobPostId;
 	}
@@ -75,5 +81,21 @@ public class JobPostModel {
 
 	public void setCompany(Map<String, CompanyModel> company) {
 		this.company = company;
+	}
+
+	public String getApplicationStatus() {
+		return applicationStatus;
+	}
+
+	public void setApplicationStatus(String applicationStatus) {
+		this.applicationStatus = applicationStatus;
+	}
+
+	public String getJobPostStatus() {
+		return jobPostStatus;
+	}
+
+	public void setJobPostStatus(String jobPostStatus) {
+		this.jobPostStatus = jobPostStatus;
 	}
 }

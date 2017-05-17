@@ -63,7 +63,7 @@ public class CompanyController {
 	public ResponseEntity<Object> getCompanyJobPost(@PathVariable(name = "userId", required = true) long userId) {
 		try {
 			List<JobPost> jobPosts = companyService.getJobPosts(userId);
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts), null));
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, false), null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -76,7 +76,7 @@ public class CompanyController {
 			@RequestBody JobPost jobPost) {
 		try {
 			List<JobPost> jobPosts = companyService.postJob(userId, jobPost);
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts), null));
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, false), null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -90,7 +90,7 @@ public class CompanyController {
 			@RequestBody JobPost jobPost) {
 		try {
 			List<JobPost> jobPosts = companyService.updateJobPost(userId, jobId, jobPost);
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts), null));
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, false), null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),

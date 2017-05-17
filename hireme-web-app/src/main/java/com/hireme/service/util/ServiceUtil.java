@@ -196,22 +196,22 @@ public class ServiceUtil {
 		if(needAll) {
 			List<JobPost> jobPosts = company.getJobPosts();
 			if (jobPosts != null) {
-				Map<String, List<JobPostModel>> jobPostsList = getJobPostList(jobPosts);
+				Map<String, List<JobPostModel>> jobPostsList = getJobPostList(jobPosts, false);
 				companyModel.setJobPosts(jobPostsList);
 			}
 		}
 		return companyModel;
 	}
 	
-	public static Map<String, List<JobPostModel>> getJobPostList(List<JobPost> jobPosts) {
+	public static Map<String, List<JobPostModel>> getJobPostList(List<JobPost> jobPosts, boolean needCompany) {
 		Map<String,List<JobPostModel>> response = null;
 		for (JobPost jobPost : jobPosts) {
-			response = buildJobPostResponse("jobPost", getJobPostModel(jobPost), response);
+			response = buildJobPostResponse("jobPost", getJobPostModel(jobPost, needCompany), response);
 		}
 		return response;
 	}
 
-	private static JobPostModel getJobPostModel(JobPost jobPost) {
+	public static JobPostModel getJobPostModel(JobPost jobPost, boolean needCompany) {
 		JobPostModel jobPostModel = new JobPostModel();
 		jobPostModel.setDescription(jobPost.getDescription());
 		jobPostModel.setJobPostId(jobPost.getJobPostId());
@@ -220,8 +220,12 @@ public class ServiceUtil {
 		jobPostModel.setTitle(jobPost.getTitle());
 		jobPostModel.setResponsibilities(jobPost.getResponsibilities());
 		
-		jobPostModel.setCompany(new HashMap<>());
-		jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
+		if(needCompany) {
+			jobPostModel.setCompany(new HashMap<>());
+			jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
+		} else {
+			jobPostModel.setJobPostStatus(jobPost.getStatus());
+		}
 		return jobPostModel;
 	}
 }

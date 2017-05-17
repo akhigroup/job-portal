@@ -18,15 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Education;
+import com.hireme.model.JobApplication;
 import com.hireme.model.JobPost;
 import com.hireme.model.JobSeeker;
 import com.hireme.model.Skill;
 import com.hireme.model.User;
 import com.hireme.model.WorkExperience;
+import com.hireme.model.id.SeekerPostId;
+import com.hireme.repository.JobApplicationRepository;
 import com.hireme.service.JobSeekerService;
 import com.hireme.service.JobService;
 import com.hireme.service.UserService;
 import com.hireme.service.model.EducationModel;
+import com.hireme.service.model.JobPostModel;
 import com.hireme.service.model.JobSeekerModel;
 import com.hireme.service.model.Response;
 import com.hireme.service.model.SkillModel;
@@ -47,6 +51,9 @@ public class JobSeekerController {
 	
 	@Autowired
 	private JobService jobService;
+	
+	@Autowired
+	private JobApplicationRepository jobApplicationRepository;
 
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> createOrUpdateJobSeeker(@PathVariable(name = "userId", required = true) long userId,
@@ -361,7 +368,7 @@ public class JobSeekerController {
 			jobService.apply(jobSeeker.getJobSeekerId(), jobPostId);
 			List<JobPost> jobPosts = jobSeeker.getApplication();
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					ServiceUtil.getJobPostList(jobPosts), null));
+					ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -390,8 +397,18 @@ public class JobSeekerController {
 			userService.getUser(userId);
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			List<JobPost> jobPosts = jobSeeker.getApplication();
+			List<JobPostModel> response = new ArrayList<>();
+			for (JobPost jobPost : jobPosts) {
+				JobPostModel jobPostModel = ServiceUtil.getJobPostModel(jobPost, true);
+				SeekerPostId id = new SeekerPostId();
+				id.setJobSeekerId(jobSeeker.getJobSeekerId());
+				id.setJobPostId(jobPost.getJobPostId());
+				JobApplication appication = jobApplicationRepository.getOne(id);
+				jobPostModel.setApplicationStatus(appication.getStatus());
+				response.add(jobPostModel);
+			}
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					ServiceUtil.getJobPostList(jobPosts), null));
+					response, null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -437,7 +454,7 @@ public class JobSeekerController {
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			List<JobPost> jobPosts = jobSeeker.getInterests();
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					ServiceUtil.getJobPostList(jobPosts), null));
+					ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
