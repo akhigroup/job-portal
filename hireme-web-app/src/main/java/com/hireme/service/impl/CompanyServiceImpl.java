@@ -129,6 +129,7 @@ public class CompanyServiceImpl implements CompanyService {
 				currentJobPost.setLocation(jobPost.getLocation());
 				currentJobPost.setSalary(jobPost.getSalary());
 				currentJobPost.setTitle(jobPost.getTitle());
+				currentJobPost.setResponsibilities(jobPost.getResponsibilities());
 				JobPostStatus newStatus = JobPostStatus.valueOf(jobPost.getJobPostStatus());
 				JobPostStatus currentStatus = JobPostStatus.valueOf(currentJobPost.getJobPostStatus());
 
