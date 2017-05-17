@@ -50,6 +50,84 @@ $(document).ready(function () {
         '</div>' +
         '</form>';
 
+    var showSearchJobsModal = '<div class="modal searchJobModal" id="showSearchJobModalJobPostID" role="dialog">' +
+        '<div class="modal-dialog">' +
+        '<div class="modal-content">' +
+        '<div class="modal-header">' +
+        ' <button type="button" id="closeShowSearchJobJobPostID" class="close"' +
+        ' data-dismiss="modal">&times;</button>' +
+        '<h4 class="modal-title text-center form-title">Job Description</h4>' +
+        '</div>' +
+        '<div class="modal-body padtrbl">' +
+        '<form id="showSearchJobFormId" name="showSearchJobFormJobPostID" class="form-horizontal">' +
+        ' <div class="form-group">' +
+        '<label class="control-label col-xs-3" for="showSearchJobCompanyNameJobPostID">Company</label>' +
+        '<div class="col-xs-9">' +
+        '<input type="text" class="form-control" id="showSearchJobCompanyNameJobPostID" ' +
+        ' placeholder="Company name" readonly="readonly">' +
+        '</div>' +
+        '</div>' +
+
+        ' <div class="form-group">' +
+        '<label class="control-label col-xs-3" for="showSearchJobTitleJobPostID">Job Title</label>' +
+        '<div class="col-xs-9">' +
+        '<input type="text" class="form-control" id="showSearchJobTitleJobPostID" ' +
+        ' placeholder="Job Title" readonly="readonly">' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label class="control-label col-xs-3" for="showSearchJobDescriptionJobPostID">Description: </label>' +
+        '<div class="col-xs-9">' +
+        '<textarea type="text" class="form-control" id="showSearchJobDescriptionJobPostID" ' +
+        ' placeholder="Job Description" readonly="readonly"> </textarea>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label class="control-label col-xs-3"' +
+        'for="showSearchJobResponsibilitiesJobPostID">Responsibilities: </label>' +
+        '<div class="col-xs-9">' +
+        '<textarea type="text" class="form-control" id="showSearchJobResponsibilitiesJobPostID" ' +
+        ' placeholder="Responsibilities" readonly="readonly"> </textarea>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label class="control-label col-xs-3" for="showSearchJobLocationJobPostID">Location: </label>' +
+        '<div class="col-xs-9">' +
+        '<input type="text" class="form-control" id="showSearchJobLocationJobPostID" ' +
+        ' placeholder="Location" readonly="readonly">' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label class="control-label col-xs-3" for="showSearchJobSalaryJobPostID">Salary : </label>' +
+        '<div class="col-xs-9">' +
+        '<input type="number" class="form-control" id="showSearchJobSalaryJobPostID" ' +
+        'placeholder="Salary" readonly="readonly">' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<div class="col-xs-12">' +
+        '<div class="alert alert-danger" id="showSearchJobResultJobPostID"></div>' +
+        '</div>' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    var anchorJobSearch =
+        '<a href="#" id="jobsSearchJobPostID" class="list-group-item list-group-item-action searchResult" ' +
+        'data-target="#showSearchJobModalJobPostID" data-toggle="modal" ' +
+        '>JobTitle</a>';
+
+    var filterByCompanyNameCheckBox = '<div class="checkbox" id="filterByCompanyNameCheckBoxIDVAL"> ' +
+        '<label><input type="checkbox" value="CMPNM">CMPNM</label> ' +
+        '</div>';
+
+    var filterByLocationCheckBox = '<div class="checkbox" id="filterByLocationCheckBoxIDVAL"> ' +
+        '<label><input type="checkbox" value="LOC">LOC</label> ' +
+        '</div>';
+
     //Add new Job Post
     $('#newJobPostAdd').click(function (e) {
         e.preventDefault();
@@ -197,5 +275,154 @@ $(document).ready(function () {
                 }
             });
         }
+    });
+
+    //Search Job
+    $("#searchButton").click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $("#searchResult").empty();
+        $("#filterByCompanyName").empty();
+        $("#filterByLocation").empty();
+        $("#filterBySalary").empty();
+        var searchQuery = $("#searchText").val();
+
+        function updateSearchResults() {
+            $('.searchResult').hide();
+
+            companyNameFilterResult = [];
+            companyNameFilterApplied = false;
+
+            locationNameFilterResult = [];
+            locationNameFilterApplied = false;
+
+            filterResult = [];
+
+            function intersect_safe(a, b) {
+                ai = 0, bi = 0;
+                result = [];
+
+                while (ai < a.length && bi < b.length) {
+                    if (a[ai] < b[bi]) {
+                        ai++;
+                    }
+                    else if (a[ai] > b[bi]) {
+                        bi++;
+                    }
+                    else /* they're equal */
+                    {
+                        result.push(a[ai]);
+                        ai++;
+                        bi++;
+                    }
+                }
+                return result;
+            }
+
+
+            //As per company Name
+            $('#filterByCompanyName  input:checked').each(function () {
+                companyNameFilterApplied = true;
+                copmanyName = $(this).val();
+                $('.searchJobModal').each(function (i, obj) {
+                    jobPostId = $(obj).attr("id");
+                    jobPostId = jobPostId.replace("showSearchJobModal", "");
+                    if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName) {
+                        companyNameFilterResult.push("#jobsSearch" + jobPostId);
+                    }
+                });
+            });
+
+            //As per Location
+            $('#filterByLocation  input:checked').each(function () {
+                locationNameFilterApplied = true;
+                locationName = $(this).val();
+                $('.searchJobModal').each(function (i, obj) {
+                    jobPostId = $(obj).attr("id");
+                    jobPostId = jobPostId.replace("showSearchJobModal", "");
+                    /*alert($("#showSearchJobLocation" + jobPostId).val());
+                     alert(locationName);
+                     alert($("#showSearchJobLocation" + jobPostId).val() == locationName);*/
+                    if ($("#showSearchJobLocation" + jobPostId).val() == locationName) {
+                        //$("#jobsSearch" +  jobPostId).show();
+                        locationNameFilterResult.push("#jobsSearch" + jobPostId);
+                    }
+                });
+            });
+
+            if (locationNameFilterApplied && companyNameFilterApplied) {
+                //alert(locationNameFilterResult);
+                //alert(companyNameFilterResult);
+                filterResult = intersect_safe(locationNameFilterResult, companyNameFilterResult);
+            } else if (locationNameFilterApplied) {
+                filterResult = locationNameFilterResult;
+            } else if (companyNameFilterApplied) {
+                filterResult = companyNameFilterResult;
+            }
+
+            for (i = 0; i < filterResult.length; i++) {
+                $(filterResult[i]).show();
+            }
+        }
+
+        $.get(url + "/job/" + searchQuery, function (data, status) {
+            object = jQuery.parseJSON(JSON.stringify(data));
+            if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
+                jobPosts = object.jobPostList.jobPost;
+                i = 0;
+                for (i = 0; jobPosts.length > i; i++) {
+                    jobPostId = jobPosts[i].jobPostId;
+                    thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
+                    thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
+                    thisModal = showSearchJobsModal.replace(/JobPostID/g, jobPostId);
+                    if ($("#jobsSearch" + jobPostId).length == 0) {
+                        $("#searchResult").append(thisModal);
+                        $("#searchResult").append(thisAnchor);
+                        $("#showSearchJobResult" + jobPostId).hide();
+                    }
+
+                    $("#showSearchJobTitle" + jobPostId).val(jobPosts[i].title);
+                    $("#showSearchJobDescription" + jobPostId).val(jobPosts[i].description);
+                    $("#showSearchJobResponsibilities" + jobPostId).val(jobPosts[i].responsibilities);
+                    $("#showSearchJobLocation" + jobPostId).val(jobPosts[i].location);
+                    $("#showSearchJobSalary" + jobPostId).val(jobPosts[i].salary);
+                    $("#showSearchJobCompanyName" + jobPostId).val(jobPosts[i].company.company.name);
+
+                    //Adding filters
+                    //By company Name
+                    if("" ==  $("#filterByCompanyName").text()) {
+                        $("#filterByCompanyName").append("By Company name")
+                    }
+                    companyName = $("#showSearchJobCompanyName" + jobPostId).val();
+
+                    if ($("#filterByCompanyNameCheckBox" + companyName.replace(/\s+/g, '')).length == 0) {
+                        thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
+                        thisFilter = thisFilter.replace("IDVAL", companyName.replace(/\s+/g, ''));
+                        $("#filterByCompanyName").append(thisFilter);
+
+                        $("#filterByCompanyNameCheckBox" + companyName.replace(/\s+/g, '')).click(function() {
+                            updateSearchResults();
+                        });
+                    }
+
+                    //By Location
+                    if("" ==  $("#filterByLocation").text()) {
+                        $("#filterByLocation").append("By Location")
+                    }
+                    locationName = $("#showSearchJobLocation" + jobPostId).val();
+
+                    if ($("#filterByLocationCheckBox" + locationName.replace(/\s+/g, '')).length == 0) {
+                        thisFilter = filterByLocationCheckBox.replace(/LOC/g, locationName);
+                        thisFilter = thisFilter.replace("IDVAL", locationName.replace(/\s+/g, ''));
+                        $("#filterByLocation").append(thisFilter);
+
+                        $("#filterByLocationCheckBox" + locationName.replace(/\s+/g, '')).click(function() {
+                            updateSearchResults();
+                        });
+                    }
+                }
+            } else {
+            }
+        });
     });
 });
