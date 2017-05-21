@@ -21,6 +21,7 @@ import com.hireme.model.Education;
 import com.hireme.model.JobApplication;
 import com.hireme.model.JobPost;
 import com.hireme.model.JobSeeker;
+import com.hireme.model.Period;
 import com.hireme.model.Skill;
 import com.hireme.model.User;
 import com.hireme.model.WorkExperience;
@@ -48,10 +49,10 @@ public class JobSeekerController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private JobService jobService;
-	
+
 	@Autowired
 	private JobApplicationRepository jobApplicationRepository;
 
@@ -125,7 +126,7 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@PostMapping(value = "/education/{educationId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> updateEducation(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "educationId", required = true) long educationId,
@@ -136,16 +137,20 @@ public class JobSeekerController {
 			List<Education> educationList = newJobSeeker.getEducation();
 			if (educationList == null || educationList.size() == 0) {
 				throw new BusinessException(404, "Nothing to update");
-			}
-			else {
+			} else {
 				for (Education education : educationList) {
-					if(education.getEducationId() == educationId) {
+					if (education.getEducationId() == educationId) {
 						education.setDegree(educationModel.getDegree());
 						education.setField(educationModel.getField());
+
+						if (education.getPeriod() == null) {
+							education.setPeriod(new Period());
+						}
 						education.getPeriod().setFromDate(educationModel.getFrom());
 						education.getPeriod().setToDate(educationModel.getTo());
+
 						education.setSchoolName(educationModel.getSchoolName());
-						
+
 						jobSeekerService.update(newJobSeeker);
 						return ResponseEntity.ok(ServiceUtil.buildResponse("educationList",
 								ServiceUtil.getEducaitonList(newJobSeeker.getEducation()), null));
@@ -153,7 +158,7 @@ public class JobSeekerController {
 				}
 				throw new BusinessException(404, "No educaiotn with id" + educationId + " found to update");
 			}
-			
+
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -189,7 +194,6 @@ public class JobSeekerController {
 		}
 	}
 
-
 	@PostMapping(value = "/workex", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> addWorkExperience(@PathVariable(name = "userId", required = true) long userId,
 			@RequestBody WorkExperienceModel workExperienceModel) {
@@ -213,7 +217,7 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@PostMapping(value = "/workex/{workExId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> updateWorkExperience(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "workExId", required = true) long workExId,
@@ -224,10 +228,9 @@ public class JobSeekerController {
 			List<WorkExperience> workExList = newJobSeeker.getWorkExperience();
 			if (workExList == null || workExList.size() == 0) {
 				throw new BusinessException(404, "Nothing to update");
-			}
-			else {
+			} else {
 				for (WorkExperience workExperience : workExList) {
-					if(workExperience.getWorkExperienceId() == workExId) {
+					if (workExperience.getWorkExperienceId() == workExId) {
 						workExperience.setCompanyName(workExperienceModel.getCompanyName());
 						workExperience.setJobTitle(workExperienceModel.getJobTitle());
 						workExperience.getPeriod().setFromDate(workExperienceModel.getFrom());
@@ -240,7 +243,7 @@ public class JobSeekerController {
 				}
 				throw new BusinessException(404, "No work-ex with id" + workExId + " found to update");
 			}
-			
+
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -276,7 +279,6 @@ public class JobSeekerController {
 		}
 	}
 
-
 	@PostMapping(value = "/skill", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> addSkill(@PathVariable(name = "userId", required = true) long userId,
 			@RequestBody SkillModel skillModel) {
@@ -292,8 +294,8 @@ public class JobSeekerController {
 			skill.setJobSeeker(newJobSeeker);
 			skillList.add(skill);
 			jobSeekerService.update(newJobSeeker);
-			return ResponseEntity.ok(ServiceUtil.buildResponse("skillList",
-					ServiceUtil.getSkillList(newJobSeeker.getSkills()), null));
+			return ResponseEntity.ok(
+					ServiceUtil.buildResponse("skillList", ServiceUtil.getSkillList(newJobSeeker.getSkills()), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
@@ -328,12 +330,10 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
 
 	@PostMapping(value = "/skill/{skillId}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> updateSkill(@PathVariable(name = "userId", required = true) long userId,
-			@PathVariable(name = "skillId", required = true) long skillId,
-			@RequestBody SkillModel skillModel) {
+			@PathVariable(name = "skillId", required = true) long skillId, @RequestBody SkillModel skillModel) {
 		try {
 			userService.getUser(userId);
 			JobSeeker newJobSeeker = jobSeekerService.getByUserId(userId);
@@ -350,7 +350,7 @@ public class JobSeekerController {
 								ServiceUtil.getSkillList(newJobSeeker.getSkills()), null));
 					}
 				}
-				throw new BusinessException(404, "No skill with id " + skillId +" found to update.");
+				throw new BusinessException(404, "No skill with id " + skillId + " found to update.");
 			}
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
@@ -358,7 +358,7 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@PostMapping(value = "/job/{jobPostId}/application", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> applyJob(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
@@ -367,15 +367,16 @@ public class JobSeekerController {
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			jobService.apply(jobSeeker.getJobSeekerId(), jobPostId);
 			List<JobPost> jobPosts = jobSeeker.getApplication();
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					ServiceUtil.getJobPostList(jobPosts, true), null));
+			// Util.send("You've applied for job " + jobPostId);
+			return ResponseEntity
+					.ok(ServiceUtil.buildResponse("jobPosts", ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@DeleteMapping(value = "/job/{jobPostId}/application")
 	public ResponseEntity<Object> withdrawJobApplication(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
@@ -390,7 +391,7 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@GetMapping(value = "/job/application", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> getJobApplication(@PathVariable(name = "userId", required = true) long userId) {
 		try {
@@ -407,16 +408,14 @@ public class JobSeekerController {
 				jobPostModel.setApplicationStatus(appication.getStatus());
 				response.add(jobPostModel);
 			}
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					response, null));
+			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts", response, null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
-	
+
 	@PostMapping(value = "/job/{jobPostId}/interest")
 	public ResponseEntity<Object> addIntrestJob(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
@@ -431,7 +430,7 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@DeleteMapping(value = "/job/{jobPostId}/interest")
 	public ResponseEntity<Object> removeJobIntrest(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
@@ -446,34 +445,35 @@ public class JobSeekerController {
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@GetMapping(value = "/job/interest", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> getJobIntrest(@PathVariable(name = "userId", required = true) long userId) {
 		try {
 			userService.getUser(userId);
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			List<JobPost> jobPosts = jobSeeker.getInterests();
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPosts",
-					ServiceUtil.getJobPostList(jobPosts, true), null));
+			return ResponseEntity
+					.ok(ServiceUtil.buildResponse("jobPosts", ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch (BusinessException e) {
 			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
 					HttpStatus.valueOf(e.getErrorCode()));
 		}
 	}
-	
+
 	@GetMapping(value = "/job/{queryString}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> searchJobPost(@PathVariable(name = "userId", required = true) long userId,
 			@PathVariable(name = "queryString", required = true) String queryString) {
 		try {
 			System.out.println(queryString);
 			List<JobPost> jobPosts = jobService.searchJobs(queryString);
-			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, true), null));
-		} catch(BusinessException be) {
+			return ResponseEntity
+					.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, true), null));
+		} catch (BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
 					HttpStatus.valueOf(be.getErrorCode()));
 		}
 	}
-	
+
 }

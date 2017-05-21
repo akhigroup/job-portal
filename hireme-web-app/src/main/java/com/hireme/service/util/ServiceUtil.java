@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import com.hireme.model.*;
 import com.hireme.service.model.*;
@@ -91,36 +100,35 @@ public class ServiceUtil {
 	}
 
 	public static Map<String, List<EducationModel>> getEducaitonList(List<Education> educationList) {
-		Map<String,List<EducationModel>> response = null;
+		Map<String, List<EducationModel>> response = null;
 		for (Education education : educationList) {
-			response = buildEducationListResponse("education",getEducationModel(education), response);
+			response = buildEducationListResponse("education", getEducationModel(education), response);
 		}
 		return response;
 	}
 
 	public static Map<String, List<WorkExperienceModel>> getWorkExList(List<WorkExperience> workExList) {
-		Map<String,List<WorkExperienceModel>> response = null;
+		Map<String, List<WorkExperienceModel>> response = null;
 		for (WorkExperience workExperience : workExList) {
-			response = buildWorkExListResponse("workExperience",getWorkExperienceModel(workExperience), response);
+			response = buildWorkExListResponse("workExperience", getWorkExperienceModel(workExperience), response);
 		}
 		return response;
 	}
 
 	public static Map<String, List<SkillModel>> getSkillList(List<Skill> skillList) {
-		Map<String,List<SkillModel>> response = null;
+		Map<String, List<SkillModel>> response = null;
 		for (Skill skill : skillList) {
-			response = buildSkillListResponse("skill",getSkillModel(skill), response);
+			response = buildSkillListResponse("skill", getSkillModel(skill), response);
 		}
 		return response;
 	}
-
 
 	public static EducationModel getEducationModel(Education education) {
 		EducationModel educationModel = new EducationModel();
 		educationModel.setDegree(education.getDegree());
 		educationModel.setEducationId(education.getEducationId());
 		educationModel.setField(education.getField());
-		if(education.getPeriod()!= null) {
+		if (education.getPeriod() != null) {
 			educationModel.setFrom(education.getPeriod().getFromDate());
 			educationModel.setTo(education.getPeriod().getToDate());
 		}
@@ -142,7 +150,7 @@ public class ServiceUtil {
 	public static WorkExperienceModel getWorkExperienceModel(WorkExperience workExperience) {
 		WorkExperienceModel workExperienceModel = new WorkExperienceModel();
 		workExperienceModel.setCompanyName(workExperience.getCompanyName());
-		if(workExperience.getPeriod() != null) {
+		if (workExperience.getPeriod() != null) {
 			workExperienceModel.setFrom(workExperience.getPeriod().getFromDate());
 			workExperienceModel.setTo(workExperience.getPeriod().getToDate());
 		}
@@ -160,7 +168,6 @@ public class ServiceUtil {
 		workExperience.setJobTitle(workExperienceModel.getJobTitle());
 		return workExperience;
 	}
-
 
 	public static SkillModel getSkillModel(Skill skill) {
 		SkillModel skillModel = new SkillModel();
@@ -186,7 +193,7 @@ public class ServiceUtil {
 		companyModel.setName(company.getName());
 		companyModel.setWebsite(company.getWebsite());
 
-		if(needAll) {
+		if (needAll) {
 			List<JobPost> jobPosts = company.getJobPosts();
 			if (jobPosts != null) {
 				Map<String, List<JobPostModel>> jobPostsList = getJobPostList(jobPosts, false);
@@ -197,7 +204,7 @@ public class ServiceUtil {
 	}
 
 	public static Map<String, List<JobPostModel>> getJobPostList(List<JobPost> jobPosts, boolean needCompany) {
-		Map<String,List<JobPostModel>> response = null;
+		Map<String, List<JobPostModel>> response = null;
 		for (JobPost jobPost : jobPosts) {
 			response = buildJobPostResponse("jobPost", getJobPostModel(jobPost, needCompany), response);
 		}
@@ -213,8 +220,8 @@ public class ServiceUtil {
 		jobPostModel.setTitle(jobPost.getTitle());
 		jobPostModel.setResponsibilities(jobPost.getResponsibilities());
 		jobPostModel.setJobPostStatus(jobPost.getJobPostStatus());
-		
-		if(needCompany) {
+
+		if (needCompany) {
 			jobPostModel.setCompany(new HashMap<>());
 			jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
 		}
@@ -226,5 +233,36 @@ public class ServiceUtil {
 		user.setEmail(userForm.getEmail());
 		user.setPassword(userForm.getPassword());
 		return user;
+	}
+	
+	public static void sendMail(String email, String subject, String body) {
+		String from = "hiremewebapp@gmail.com";// change accordingly
+		final String username = "hiremewebapp@gmail.com";// change accordingly
+		final String password = "cmpe275qwerty";// change accordingly
+
+		String host = "smtp.gmail.com";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
+
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(from));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+			message.setSubject(subject);
+			message.setText(body);
+			Transport.send(message);
+		} catch (MessagingException e) {
+			//TODO
+		}
 	}
 }
