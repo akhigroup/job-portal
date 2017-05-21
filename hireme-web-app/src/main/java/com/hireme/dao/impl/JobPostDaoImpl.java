@@ -30,11 +30,12 @@ public class JobPostDaoImpl implements JobPostDao {
 
 	@Override
 	public List<JobPost> search(String queryString) throws BusinessException {
-		
 		String[] searchString = queryString.split(" ");
-		Set<JobPost> jobPosts = new HashSet<>();
-		
+		List<JobPost> response = new ArrayList<>();
+
 		for (String string : searchString) {
+			Set<JobPost> jobPosts = new HashSet<>();
+
 			Set<JobPost> byTitile = jobPostRepository.findByTitleIgnoreCaseContaining(string);
 			Set<JobPost> byDescription = jobPostRepository.findByDescriptionIgnoreCaseContaining(string);
 			Set<JobPost> byLocation = jobPostRepository.findByLocationIgnoreCaseContaining(string);
@@ -43,7 +44,7 @@ public class JobPostDaoImpl implements JobPostDao {
 			Set<JobPost> byCompanyDescription = jobPostRepository.findByCompanyDescriptionIgnoreCaseContaining(string);
 			Set<JobPost> byCompanyLocation = jobPostRepository.findByCompanyLocationIgnoreCaseContaining(string);
 			Set<JobPost> byCompanyWebsite = jobPostRepository.findByCompanyWebsiteIgnoreCaseContaining(string);
-			
+
 			jobPosts.addAll(byTitile);
 			jobPosts.addAll(byDescription);
 			jobPosts.addAll(byLocation);
@@ -52,17 +53,26 @@ public class JobPostDaoImpl implements JobPostDao {
 			jobPosts.addAll(byCompanyDescription);
 			jobPosts.addAll(byCompanyLocation);
 			jobPosts.addAll(byCompanyWebsite);
+
+			if(jobPosts.size() > 0) {
+				if(response.size() == 0) {
+					response.addAll(jobPosts);
+				} else {
+					response.retainAll(jobPosts);
+				}
+			} else {
+				response.clear();
+				break;
+			}
 		}
-		
-		if(jobPosts.size() > 0) {
-			List<JobPost> response= new ArrayList<>();
-			response.addAll(jobPosts);
+
+		if(response.size() > 0) {
 			return response;
 		} else {
 			throw new BusinessException(404, "No jobs found for given criteria.");
 		}
-		
+
 	}
-		
-		
+
+
 }
