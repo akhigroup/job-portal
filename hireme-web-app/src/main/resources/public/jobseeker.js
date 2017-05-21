@@ -381,6 +381,7 @@ $(document).ready(function () {
 
         function updateSearchResults() {
             $('.searchResult').hide();
+            alert("Clicked");
 
             companyNameFilterResult = [];
             companyNameFilterApplied = false;
@@ -410,7 +411,6 @@ $(document).ready(function () {
                 }
                 return result;
             }
-
 
             //As per company Name
             $('#filterByCompanyName  input:checked').each(function () {
