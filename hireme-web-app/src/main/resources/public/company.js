@@ -368,65 +368,67 @@ $(document).ready(function () {
             	 $('.searchResult').show();
             }
         }
+        
+        if(searchQuery != "") {
+        	$.get(url + "/job/" + searchQuery, function (data, status) {
+                object = jQuery.parseJSON(JSON.stringify(data));
+                if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
+                    jobPosts = object.jobPostList.jobPost;
+                    i = 0;
+                    for (i = 0; jobPosts.length > i; i++) {
+                        jobPostId = jobPosts[i].jobPostId;
+                        thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
+                        thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
+                        thisModal = showSearchJobsModal.replace(/JobPostID/g, jobPostId);
+                        if ($("#jobsSearch" + jobPostId).length == 0) {
+                            $("#searchResult").append(thisModal);
+                            $("#searchResult").append(thisAnchor);
+                            $("#showSearchJobResult" + jobPostId).hide();
+                        }
 
-        $.get(url + "/job/" + searchQuery, function (data, status) {
-            object = jQuery.parseJSON(JSON.stringify(data));
-            if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
-                jobPosts = object.jobPostList.jobPost;
-                i = 0;
-                for (i = 0; jobPosts.length > i; i++) {
-                    jobPostId = jobPosts[i].jobPostId;
-                    thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
-                    thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
-                    thisModal = showSearchJobsModal.replace(/JobPostID/g, jobPostId);
-                    if ($("#jobsSearch" + jobPostId).length == 0) {
-                        $("#searchResult").append(thisModal);
-                        $("#searchResult").append(thisAnchor);
-                        $("#showSearchJobResult" + jobPostId).hide();
+                        $("#showSearchJobTitle" + jobPostId).val(jobPosts[i].title);
+                        $("#showSearchJobDescription" + jobPostId).val(jobPosts[i].description);
+                        $("#showSearchJobResponsibilities" + jobPostId).val(jobPosts[i].responsibilities);
+                        $("#showSearchJobLocation" + jobPostId).val(jobPosts[i].location);
+                        $("#showSearchJobSalary" + jobPostId).val(jobPosts[i].salary);
+                        $("#showSearchJobCompanyName" + jobPostId).val(jobPosts[i].company.company.name);
+
+                        //Adding filters
+                        //By company Name
+                        if("" ==  $("#filterByCompanyName").text()) {
+                            $("#filterByCompanyName").append("By Company name")
+                        }
+                        companyName = $("#showSearchJobCompanyName" + jobPostId).val();
+
+                        if ($("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
+                            thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
+                            thisFilter = thisFilter.replace("IDVAL", companyName.replace(/[^a-zA-Z0-9]/g, ''));
+                            $("#filterByCompanyName").append(thisFilter);
+
+                            $("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
+                                updateSearchResults();
+                            });
+                        }
+
+                        //By Location
+                        if("" ==  $("#filterByLocation").text()) {
+                            $("#filterByLocation").append("By Location")
+                        }
+                        locationName = $("#showSearchJobLocation" + jobPostId).val();
+
+                        if ($("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
+                            thisFilter = filterByLocationCheckBox.replace(/LOC/g, locationName);
+                            thisFilter = thisFilter.replace("IDVAL", locationName.replace(/[^a-zA-Z0-9]/g, ''));
+                            $("#filterByLocation").append(thisFilter);
+
+                            $("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
+                                updateSearchResults();
+                            });
+                        }
                     }
-
-                    $("#showSearchJobTitle" + jobPostId).val(jobPosts[i].title);
-                    $("#showSearchJobDescription" + jobPostId).val(jobPosts[i].description);
-                    $("#showSearchJobResponsibilities" + jobPostId).val(jobPosts[i].responsibilities);
-                    $("#showSearchJobLocation" + jobPostId).val(jobPosts[i].location);
-                    $("#showSearchJobSalary" + jobPostId).val(jobPosts[i].salary);
-                    $("#showSearchJobCompanyName" + jobPostId).val(jobPosts[i].company.company.name);
-
-                    //Adding filters
-                    //By company Name
-                    if("" ==  $("#filterByCompanyName").text()) {
-                        $("#filterByCompanyName").append("By Company name")
-                    }
-                    companyName = $("#showSearchJobCompanyName" + jobPostId).val();
-
-                    if ($("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
-                        thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
-                        thisFilter = thisFilter.replace("IDVAL", companyName.replace(/[^a-zA-Z0-9]/g, ''));
-                        $("#filterByCompanyName").append(thisFilter);
-
-                        $("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
-                            updateSearchResults();
-                        });
-                    }
-
-                    //By Location
-                    if("" ==  $("#filterByLocation").text()) {
-                        $("#filterByLocation").append("By Location")
-                    }
-                    locationName = $("#showSearchJobLocation" + jobPostId).val();
-
-                    if ($("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
-                        thisFilter = filterByLocationCheckBox.replace(/LOC/g, locationName);
-                        thisFilter = thisFilter.replace("IDVAL", locationName.replace(/[^a-zA-Z0-9]/g, ''));
-                        $("#filterByLocation").append(thisFilter);
-
-                        $("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
-                            updateSearchResults();
-                        });
-                    }
+                } else {
                 }
-            } else {
-            }
-        });
+            });
+        }
     });
 });
