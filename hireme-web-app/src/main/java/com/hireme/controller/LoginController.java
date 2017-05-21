@@ -17,11 +17,17 @@ import com.hireme.service.UserService;
 import com.hireme.service.model.UserModel;
 import com.hireme.service.util.ServiceUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 @Controller
 public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    private static Map<String, String> tokenMap = new HashMap<>();
 
     @RequestMapping(value = {"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login() {
@@ -40,16 +46,13 @@ public class LoginController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView createNewUser(@Valid UserModel userModel, BindingResult bindingResult) {
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    public ModelAndView verify(@Valid UserModel userModel, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        User userExists;
+        User userExists = null;
         try {
             userExists = userService.getUser(userModel.getEmail());
         } catch (BusinessException e) {
-            // TODO Auto-generated catch block
-            userExists = null;
-            e.printStackTrace();
         }
         if (userExists != null) {
             bindingResult
@@ -59,20 +62,38 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("registration");
         } else {
-            try {
+            UUID token = UUID.randomUUID();
+            ServiceUtil.sendMail(userModel.getEmail(), "HireMe! Email Verification Token", "Token : " + token);
+            tokenMap.put(userModel.getEmail(), token.toString());
+            modelAndView.addObject("userModel", userModel);
+            modelAndView.setViewName("verify");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    public ModelAndView createNewUser(@Valid UserModel userModel, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            if (tokenMap.get(userModel.getEmail()).equals(userModel.getToken())) {
+                tokenMap.remove(userModel.getEmail());
                 User newUser = ServiceUtil.getUser(userModel);
                 userService.createUser(newUser, userModel.getRole());
                 ServiceUtil.sendMail(newUser.getEmail(), "Welcome to HireMe! ", "Congratulations, you may exploit our services. We wish you all the best.");
-            } catch (BusinessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                modelAndView.addObject("successMessage", "User has been registered successfully");
+                modelAndView.addObject("userModel", new UserModel());
+                modelAndView.setViewName("registration");
+            } else {
+                bindingResult
+                        .rejectValue("token", "error.user",
+                                "Invalid token");
+                modelAndView.addObject("userModel", userModel);
+                modelAndView.setViewName("verify");
             }
-            modelAndView.addObject("successMessage", "User has been registered successfully");
-            modelAndView.addObject("userModel", new UserModel());
-            modelAndView.setViewName("registration");
-
+        } catch (BusinessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-
         return modelAndView;
     }
 
@@ -104,7 +125,7 @@ public class LoginController {
             modelAndView.addObject("userId", user.getId());
             modelAndView.setViewName("/jobseeker/jobseeker");
         } catch (BusinessException e) {
-               // TODO Auto-generated catch block
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return modelAndView;
@@ -125,6 +146,4 @@ public class LoginController {
         }
         return modelAndView;
     }
-
-
 }
