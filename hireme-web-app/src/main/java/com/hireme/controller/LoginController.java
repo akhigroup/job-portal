@@ -1,10 +1,7 @@
 package com.hireme.controller;
 
-import javax.print.ServiceUI;
 import javax.validation.Valid;
 
-import com.hireme.service.model.UserModel;
-import com.hireme.service.util.ServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.User;
 import com.hireme.service.UserService;
+import com.hireme.service.model.UserModel;
 import com.hireme.service.util.ServiceUtil;
 
 @Controller
@@ -64,7 +62,7 @@ public class LoginController {
             try {
                 User newUser = ServiceUtil.getUser(userModel);
                 userService.createUser(newUser, userModel.getRole());
-                ServiceUtil.sendMail(user.getEmail(), "Welcome to HirMe! ", "Congratulations, you may exploit our services. We wish you all the best.");
+                ServiceUtil.sendMail(newUser.getEmail(), "Welcome to HireMe! ", "Congratulations, you may exploit our services. We wish you all the best.");
             } catch (BusinessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
