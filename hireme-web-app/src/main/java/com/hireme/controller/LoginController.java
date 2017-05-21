@@ -2,6 +2,8 @@ package com.hireme.controller;
 
 import javax.validation.Valid;
 
+import com.hireme.service.model.UserModel;
+import com.hireme.service.util.ServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,18 +34,18 @@ public class LoginController {
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registration() {
         ModelAndView modelAndView = new ModelAndView();
-        User user = new User();
-        modelAndView.addObject("user", user);
+        UserModel userModel = new UserModel();
+        modelAndView.addObject("userModel", userModel);
         modelAndView.setViewName("registration");
         return modelAndView;
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
+    public ModelAndView createNewUser(@Valid UserModel userModel, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
         User userExists;
         try {
-            userExists = userService.getUser(user.getEmail());
+            userExists = userService.getUser(userModel.getEmail());
         } catch (BusinessException e) {
             // TODO Auto-generated catch block
             userExists = null;
@@ -58,7 +60,8 @@ public class LoginController {
             modelAndView.setViewName("registration");
         } else {
             try {
-                userService.createUser(user, "ADMIN");
+                User newUser = ServiceUtil.getUser(userModel);
+                userService.createUser(newUser, userModel.getRole());
             } catch (BusinessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -80,7 +83,7 @@ public class LoginController {
         User user;
         try {
             user = userService.getUser(auth.getName());
-            modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+            modelAndView.addObject("userName", "Welcome (" + user.getEmail() + ")");
             modelAndView.addObject("adminMessage", "Content Available Only for Users with Admin Role");
             modelAndView.setViewName("admin/home");
         } catch (BusinessException e) {

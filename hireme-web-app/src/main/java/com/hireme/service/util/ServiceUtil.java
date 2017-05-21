@@ -5,19 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hireme.model.Company;
-import com.hireme.model.Education;
-import com.hireme.model.JobPost;
-import com.hireme.model.JobSeeker;
-import com.hireme.model.Period;
-import com.hireme.model.Skill;
-import com.hireme.model.WorkExperience;
-import com.hireme.service.model.CompanyModel;
-import com.hireme.service.model.EducationModel;
-import com.hireme.service.model.JobPostModel;
-import com.hireme.service.model.JobSeekerModel;
-import com.hireme.service.model.SkillModel;
-import com.hireme.service.model.WorkExperienceModel;
+import com.hireme.model.*;
+import com.hireme.service.model.*;
 
 public class ServiceUtil {
 
@@ -230,5 +219,12 @@ public class ServiceUtil {
 			jobPostModel.getCompany().put("company", getCompanyModel(jobPost.getCompany(), false));
 		}
 		return jobPostModel;
+	}
+
+	public static User getUser(UserModel userForm) {
+		User user = new User();
+		user.setEmail(userForm.getEmail());
+		user.setPassword(userForm.getPassword());
+		return user;
 	}
 }

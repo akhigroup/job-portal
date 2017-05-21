@@ -46,14 +46,6 @@ public class User {
 	@Transient
 	private String password;
 	
-	@Column(name = "first_name")
-	@NotEmpty(message = "*First name cannot be empty")
-	private String name;
-	
-	@Column(name = "last_name")
-	@NotEmpty(message = "*Last name cannot be empty")
-	private String lastName;
-	
 	@Column(name = "active")
 	private int active;
 	
@@ -75,22 +67,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public String getEmail() {
