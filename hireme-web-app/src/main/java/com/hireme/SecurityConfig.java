@@ -18,54 +18,54 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Bean
-	public BCryptPasswordEncoder getBCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Autowired
+    @Autowired
     CustomSuccessHandler customSuccessHandler;
-	
-	@Autowired
-	private DataSource dataSource;
 
-	@Value("${spring.queries.users-query}")
-	private String usersQuery;
+    @Autowired
+    private DataSource dataSource;
 
-	@Value("${spring.queries.roles-query}")
-	private String rolesQuery;
+    @Value("${spring.queries.users-query}")
+    private String usersQuery;
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth)
-			throws Exception {
-		auth.
-		jdbcAuthentication()
-		.usersByUsernameQuery(usersQuery)
-		.authoritiesByUsernameQuery(rolesQuery)
-		.dataSource(dataSource)
-		.passwordEncoder(getBCryptPasswordEncoder());
-	}
+    @Value("${spring.queries.roles-query}")
+    private String rolesQuery;
 
-	 @Override
-	    protected void configure(HttpSecurity http) throws Exception {
-	      http.authorizeRequests()
-	        .antMatchers("/", "/login").permitAll()
-	        .antMatchers("/registration").permitAll()
-	        .antMatchers("/admin/**").access("hasRole('ADMIN')")
-	        .antMatchers("/jobseeker/**").access("hasRole('JOBSEEKER')")
-	        .antMatchers("/company/**").access("hasRole('COMPANY')")
-	        .and().formLogin().loginPage("/login").successHandler(customSuccessHandler)
-	        .usernameParameter("email").passwordParameter("password")
-	        .and().logout()
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-			.logoutSuccessUrl("/").and().exceptionHandling()
-			.accessDeniedPage("/access-denied");
-	    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.
+                jdbcAuthentication()
+                .usersByUsernameQuery(usersQuery)
+                .authoritiesByUsernameQuery(rolesQuery)
+                .dataSource(dataSource)
+                .passwordEncoder(getBCryptPasswordEncoder());
+    }
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web
-		.ignoring()
-		.antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/*/jobseeker/**", "/*/company/**");
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/", "/login").permitAll()
+                .antMatchers("/registration").permitAll()
+                .antMatchers("/admin*//**").hasAuthority("ADMIN")
+                .antMatchers("/jobseeker*//**").hasAuthority("JOBSEEKER")
+                .antMatchers("/company*//**").hasAuthority("COMPANY").anyRequest()
+                .authenticated().and().csrf().disable().formLogin().loginPage("/login").successHandler(customSuccessHandler)
+                .usernameParameter("email").passwordParameter("password")
+                .and().logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/").and().exceptionHandling()
+                .accessDeniedPage("/access-denied");
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/resources/**");
+    }
 }

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Company</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
 <div class="container-fluid" class="col-xs-12">
+    <input type="hidden" id="userId" th:value="${userId}"/>
     <div class="row">
         <div class="col-xs-12">
             <div class="container">
@@ -23,18 +25,42 @@
                         <a id="Applications" href="#3" data-toggle="tab">Applications</a>
                     </li>
                     <li>
-                        <a id="Extra" href="#4" data-toggle="tab">Extra</a>
+                        <a id="Logout" th:href="@{/logout}">Logout</a>
                     </li>
                 </ul>
                 <div class="tab-content col-xs-12">
                     <div class="tab-pane active" id="1">
+                        <br><br>
+                        <div class="panel panel-default">
+                            <div class="panel-body col-xs-12">
+                                <div id="custom-search-input">
+                                    <div class="input-group col-xs-12">
+                                        <input type="text" class="form-control input-lg" placeholder="Search your job..." id="searchText"/>
+                                        <span class="input-group-btn">
+                                                <button id="searchButton" class="btn btn-lg" type="button">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </span>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="list-group col-xs-4">
+                                    <div id="filterByCompanyName"></div>
+                                    <div id="filterByLocation"></div>
+                                    <div id="filterBySalary"></div>
+                                </div>
+                                <div id="searchResult" class="list-group col-xs-8">
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane" id="2">
                         <br><br>
                         <div class="panel panel-default">
                             <div class="row">
                                 <div class="panel-body">
-                                    <img id="companyProfileImage" src="img/profile.jpg">
+                                    <img id="companyProfileImage" th:src="@{/images/profile.jpg}">
                                 </div>
                             </div>
                             <div class="row">
@@ -157,7 +183,7 @@
                                         </div>
                                     </div>
                                     <!--/ Modal box-->
-                                    <span>Posted Jobs <img id="addJobPostImg" src="img/plus.png" href="#"
+                                    <span>Posted Jobs <img id="addJobPostImg" th:src="@{/images/plus.png}" href="#"
                                                            data-target="#addJobPost" data-toggle="modal"
                                                            style="float: right; position: relative"></span>
                                     <div id="jobPosted">
@@ -169,15 +195,13 @@
                     </div>
                     <div class="tab-pane " id="3">
                     </div>
-                    <div class="tab-pane " id="4">
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="js/company.js"></script>
+<script th:src="@{https://code.jquery.com/jquery-2.2.0.min.js}"></script>
+<script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{https://rawgit.com/sjsu-sushant/job-portal/master/hireme-web-app/src/main/resources/static/scripts/company.js}"></script>
 </body>
 </html>

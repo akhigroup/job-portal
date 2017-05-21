@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Job Seeker</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
 <div class="container-fluid col-xs-12">
+    <input type="hidden" id="userId" th:value="${userId}"/>
     <div class="row">
         <div class="col-xs-12">
             <div class="container">
@@ -24,6 +26,9 @@
                     </li>
                     <li>
                         <a id="FavoriteJobs" href="#4" data-toggle="tab">Favorite Jobs</a>
+                    </li>
+                    <li>
+                        <a id="Logout" th:href="@{/logout}">Logout</a>
                     </li>
                 </ul>
 
@@ -59,7 +64,7 @@
                         <div class="panel panel-default">
                             <div class="row">
                                 <div class="panel-body">
-                                    <img id="seekerProfileImage" src="img/profile.jpg">
+                                    <img id="seekerProfileImage" th:src="@{/images/profile.jpg}">
                                     <span>Profile</span>
                                     <form id="profileForm" class="form-horizontal">
                                         <input type="file" id="profilePicture" style="display: none;">
@@ -155,7 +160,7 @@
                                         </div>
                                     </div>
                                     <!--/ Modal box-->
-                                    <span>Work experience <img id="addWorkExImg" src="img/plus.png" href="#"
+                                    <span>Work experience <img id="addWorkExImg" th:src="@{/images/plus.png}" href="#"
                                                                data-target="#addWorkEx" data-toggle="modal"
                                                                style="float: right; position: relative"></span>
 
@@ -232,7 +237,7 @@
                                         </div>
                                     </div>
                                     <!--/ Modal box-->
-                                    <span>Education <img id="addEducationImg" src="img/plus.png" href="#"
+                                    <span>Education <img id="addEducationImg" th:src="@{/images/plus.png}" href="#"
                                                          data-target="#addEducation" data-toggle="modal"
                                                          style="float: right; position: relative"></span>
 
@@ -285,7 +290,7 @@
                                         </div>
                                     </div>
                                     <!--/ Modal box-->
-                                    <span>Skills <img id="addSkillImg" src="img/plus.png" href="#"
+                                    <span>Skills <img id="addSkillImg" th:src="@{/images/plus.png}" href="#"
                                                       data-target="#addSkill" data-toggle="modal"
                                                       style="float: right; position: relative"></span>
 
@@ -315,8 +320,8 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="js/jobseeker.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js" th:src="@{https://code.jquery.com/jquery-2.2.0.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{https://rawgit.com/sjsu-sushant/job-portal/master/hireme-web-app/src/main/resources/static/scripts/jobseeker.js}"></script>
 </body>
 </html>
