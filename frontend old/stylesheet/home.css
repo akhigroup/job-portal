@@ -1,0 +1,53 @@
+body {
+  
+}
+
+#bg {
+
+  position:relative;
+}
+
+.container #seekerbutton {
+	background-color:#e74c3c;
+	border-radius:28px;
+	border:1px solid #e74c3c;
+	cursor:pointer;
+	position: absolute;
+	margin-top:-970px;
+	margin-left:1300px;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	}
+
+.container #empbutton {
+
+	background-color:#e74c3c;
+	border-radius:28px;
+	border:1px solid #e74c3c;
+	cursor:pointer;
+	position: absolute;
+	margin-top:-970px;
+	margin-left:1100px;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+}
+
+
+
+.seekerbutton:hover {
+	background-color:#5cbf2a;
+}
+.seekerbutton:active {
+	top:1px;
+}
+
+        .empbutton:hover {
+	background-color:#5cbf2a;
+}
+.empbutton:active {
+	top:1px;
+}

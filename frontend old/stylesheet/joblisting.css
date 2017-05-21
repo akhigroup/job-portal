@@ -1,0 +1,113 @@
+body
+{
+}
+
+
+#jobTitle
+{
+	margin-left:4px;
+	margin-top:600px;
+	color: #e74c3c;
+}
+
+#compName
+{
+	margin-left:4px;
+	margin-top:600px;
+}
+
+#desdiv
+{
+	width:800px;
+	margin-left:560px;
+	margin-top:120px;
+	
+
+}
+
+#listingContainer
+{
+	width:600px;
+	border-radius:10px;
+	 box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+#salary
+{
+	color:#e74c3c;
+	position:relative;
+	float:right;
+}
+
+#search
+{
+	
+	height:50px;
+	margin-left:670px;
+	margin-top:170px;
+	padding-right:25em;
+	border-style:solid;
+	border-color:#A9A9A9;
+	background-color:#E8E8E8;
+	
+}
+
+#location
+{
+	position:relative;
+	float:right;
+}
+
+
+#btn
+{
+	border-radius:8px; 
+	background-color:#e74c3c;
+	height:50px;
+	width:100px;
+	color:white;
+}
+
+
+#applyNow
+{
+	margin-top:-39px;
+	border-radius:8px; 
+	background-color:#191970;
+	height:40px;
+	width:130px;
+	color:white;
+	margin-left:670px;
+}
+
+
+#interested
+{
+	border-radius:8px; 
+	background-color:#e74c3c;
+	height:40px;
+	width:130px;
+	color:white;
+	margin-left:400px;
+}
+
+
+
+#signup
+{
+	display:inline-block;
+	float:right;
+	color:#e74c3c;
+}	
+
+
+
+
+#login
+{
+	display:inline-block;
+	float:right;
+	padding-left: 10px;
+	color:#e74c3c;
+}	
+

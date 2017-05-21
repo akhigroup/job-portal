@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheet/seekerprofile.css">
+    <script>
+        $(document).ready(function () {
+            var url = "http://localhost:8080/3/jobseeker";
+            $.get(url, function (data, status) {
+                var object = jQuery.parseJSON(JSON.stringify(data));
+                $(".firstName").val(object.jobseeker.firstName);
+                $(".lastName").val(object.jobseeker.lastName);
+                $(".summary").val(object.jobseeker.summary);
+                $(".photo").attr("src", "data:image/jpg;base64," + object.jobseeker.picture);
+                var i;
+                var educationList = object.jobseeker.educationList.education;
+                for (i = 0; educationList.length > i; i++) {
+                    $(".school").val(educationList[i].schoolName);
+                    $(".degree").val(educationList[i].degree);
+                    $(".field").val(educationList[i].field);
+                    $(".fromEdu").val(educationList[i].from);
+                    $(".toEdu").val(educationList[i].to);
+                }
+
+                var companyList = object.jobseeker.workExperienceList.workExperience;
+                for (i = 0; companyList.length > i; i++) {
+                    $(".jobTitle").val(companyList[i].jobTitle);
+                    $(".company").val(companyList[i].companyName);
+                    $(".fromWork").val(companyList[i].from);
+                    $(".toWork").val(companyList[i].to);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a submit handler to the form
+            $('.profileForm').submit(function () {
+
+                // Stop form from submitting normally
+
+                /*var pictureText = document.getElementById('profilePicture').files[0];
+                 alert(pictureText);
+                 // files is a FileList object (similar to NodeList)
+                 var file = pictureText.files[0];
+                 /!*var fr = new FileReader();
+                 fr.onload = receivedText;
+                 fr.readAsText(file);*!/
+
+                 // object for allowed media types
+                 /!*var accept = {
+                 binary: ["image/png", "image/jpeg"],
+                 text: ["text/plain", "text/css", "application/xml", "text/html"]
+                 };*!/
+
+                 if (file != null) {
+                 /!*if (accept.text.indexOf(file.type) > -1) {*!/
+                 // file is of type text, which we accept
+                 var pictureData = file.getAsText();
+                 alert("hiiiiiii")
+                 // modify data with string methods
+                 /!*}*!/
+                 }*/
+
+                // Get some values from elements on the page:
+                var parameters = {
+                    "firstName": $(".firstName").val(),
+                    "lastName": $(".lastName").val(),
+                    "summary": $(".summary").val(),
+                    "picture": ""
+                };
+                var url = "http://localhost:8080/3/jobseeker";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: JSON.stringify(parameters),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function () {
+                    }
+                });
+
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a submit handler to the form
+            $('.workForm').submit(function () {
+
+                var parameters = {
+                    "companyName": $(".company").val(),
+                    "from": $(".fromWork").val(),
+                    "to": $(".toWork").val(),
+                    "jobTitle": $(".jobTitle").val()
+                };
+
+                var url = "http://localhost:8080/3/jobseeker/workex";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: JSON.stringify(parameters),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function () {
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a submit handler to the form
+            $('.eduForm').submit(function () {
+
+                var parameters = {
+                    "schoolName": $(".school").val(),
+                    "degree": $(".degree").val(),
+                    "field": $(".field").val(),
+                    "from": $(".fromEdu").val(),
+                    "to": $(".toEdu").val()
+                };
+
+                var url = "http://localhost:8080/3/jobseeker/education";
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: JSON.stringify(parameters),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function () {
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $(".plusImg").click(function() {
+                $('.work').before('<div class="work"> <br> <span><Strong>Work Experience</strong> <input type="image" src="images/plus.png" class="plusImg"> </span> <br> <br>  <form class="workForm" method="post" enctype="multipart/form-data">  <fieldset>                    <input class="jobTitle" placeholder="Job Title" type="text" tabindex="1" required>  </fieldset>                <fieldset>                <input class="company" placeholder="Company" type="text" tabindex="2" required>                </fieldset>                <span>                <fieldset>                <input class="fromWork" placeholder="from" tabindex="3" type="date" required>                </fieldset>                <fieldset>                <input class="toWork" placeholder="to" tabindex="4" type="date" required>                </fieldset>                </span>                <button name="submit" type="submit" class="workSubmit">Submit Education</button>                </form>                </div>');
+                /*$('').appendTo(this.container);*/
+                /*$("work").append(" <b>Appended text</b>.");*/
+            });
+        });
+    </script>
+</head>
+<link rel="stylesheet" type="text/css" href="seekerprofile.css">
+<body>
+<div class="container">
+    <div class="profile">
+        <form class="profileForm" method="post" enctype="multipart/form-data">
+            <h3><Strong>Job Seeker Resume</Strong></h3>
+            <br>
+            <br>
+            <img src="images/profile.jpg" class="photo">
+            <br>
+            <br>
+            <span class="prof" id="profTitle"><Strong>Profile</strong> </span>
+            <br>
+            <br>
+            <fieldset>
+			<br>
+			<label> First Name </label>
+            <br>
+   			<input class="firstName"  type="text" tabindex="1" required>
+			<br>
+            <br>
+			</fieldset>
+            <fieldset>
+			<br>
+			<label> Last Name </label>
+            <br>
+                <input class="lastName"  type="text" tabindex="2" required>
+            <br>
+			</fieldset>
+            <fieldset>
+			<br>
+			<label> Self Introduction (Optional) </label>
+            <br>
+                <textarea class="summary" tabindex="4" required></textarea>
+            <br>
+			</fieldset>
+			<br>
+			<label id="uploadpic"> Upload a Photo </label>
+            <br>
+            <input class="profilePicture" type="file" value="Upload a photo" id = "picupload" class="btn"><span></span>
+            <br>
+            <button name="submit" type="submit" id="prosubmit" class="profileSubmit" data-submit="...Sending">Submit</button>
+        </form>
+    </div>
+
+    <div class="workBox">
+        <div class="work">
+            <br>
+            <span id="workExTitle"><Strong>Work Experience</strong> <img src="images/plus.png" class="plusImg"> </span>
+            <br>
+            <br>
+            <form class="workForm" method="post" enctype="multipart/form-data">
+                <fieldset>
+					 <br>
+					<label> Job Title </label>
+                    <input class="jobTitle"  type="text" tabindex="1" required>
+                </fieldset>
+                <fieldset>
+				 <br>
+					<label> Company Name </label>
+					<input class="company"  type="text" tabindex="2" required>
+                </fieldset>
+                <span>
+	            <fieldset>
+				 <br>
+					<label> From </label>
+					<input class="fromWork" placeholder="from" tabindex="3" type="date" required>
+                </fieldset>
+	            <fieldset>
+				 <br>
+					<label> Till </label>
+                    <input class="toWork" placeholder="to" tabindex="4" type="date" required>
+                </fieldset>
+	            </span>
+				<br>
+				
+                    <button name="submit" type="submit" class="workSubmit" id="workSub">Submit Work Experience</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="education">
+        <br>
+        <br>
+        <br>
+        <span id="eduTitle"><Strong>Education</strong><img src="images/plus.png" class="plusimg2"> </span>
+        <br>
+        <br>
+        <br>
+        <form class="eduForm" action="" method="post">
+            
+			<fieldset>
+				 <br>
+					<label> School/University </label>
+
+			<input class="school"  type="text" tabindex="1" required>
+            </fieldset>
+
+            <fieldset>
+				 <br>
+					<label> Degree </label>
+
+			<input class="degree"  type="text" tabindex="2" required>
+            </fieldset>
+            <span>
+	    <fieldset>
+				 <br>
+					<label> Field of Study </label>
+
+		<input class="field" type="text" tabindex="2" required>
+			</fieldset>
+	    </span>
+
+            <fieldset>
+				 <br>
+					<label> From </label>
+
+			<input class="fromEdu"  tabindex="3" type="date" required>
+            </fieldset>
+            <fieldset>
+				 <br>
+					<label> Till </label>
+
+			<input class="toEdu" tabindex="4" type="date" required>
+            </fieldset>
+            <br>
+            <button name="submit" type="submit" id="edubtn" class="edusubmit">Submit Education</button>
+        </form>
+    </div>
+    <button name="submit" type="submit" id="finsub" class="finalSubmit" data-submit="...Sending">Submit Form</button>
+</div>
+</body>
+</html>
