@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var url = "http://localhost:8080/2/jobseeker";
+    var url = "http://localhost:8080/3/jobseeker";
 
     var formWorkEx = '<form id="workExFormIdworkExID" name="workExForm" class="form-horizontal">' +
         '<div class="form-group">' +
