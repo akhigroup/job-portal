@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hireme.exceptions.BusinessException;
+import com.hireme.model.Company;
 import com.hireme.model.Education;
 import com.hireme.model.JobApplication;
 import com.hireme.model.JobPost;
@@ -367,7 +368,21 @@ public class JobSeekerController {
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
 			jobService.apply(jobSeeker.getJobSeekerId(), jobPostId);
 			List<JobPost> jobPosts = jobSeeker.getApplication();
-			// Util.send("You've applied for job " + jobPostId);
+			for (JobPost jobPost : jobPosts) {
+				if(jobPost.getJobPostId() == jobPostId) {
+					Company company = jobPost.getCompany();
+					//Send mail to JobSeeker
+					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "New Job application", "You've successfully submitted an applciation for " + jobPost.getTitle() 
+					+ " @ "+ company.getName() +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+				
+					//Send mail to Company
+					System.out.println("Sending mail to company " + company.getUser().getEmail());
+					ServiceUtil.sendMail(company.getUser().getEmail(), "New Job application received", "You've received an applciation for " + jobPost.getTitle() 
+					 +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+					System.out.println("Sent mail to company " + "You've received an applciation for " + jobPost.getTitle() 
+							 +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+				}
+			}
 			return ResponseEntity
 					.ok(ServiceUtil.buildResponse("jobPosts", ServiceUtil.getJobPostList(jobPosts, true), null));
 		} catch (BusinessException e) {
