@@ -381,7 +381,6 @@ $(document).ready(function () {
 
         function updateSearchResults() {
             $('.searchResult').hide();
-            alert("Clicked");
 
             companyNameFilterResult = [];
             companyNameFilterApplied = false;
@@ -455,6 +454,10 @@ $(document).ready(function () {
             for (i = 0; i < filterResult.length; i++) {
                 $(filterResult[i]).show();
             }
+            
+            if(!companyNameFilterApplied && !locationNameFilterApplied) {
+           	 $('.searchResult').show();
+           }
         }
 
         $.get(url + "/job/" + searchQuery, function (data, status) {
@@ -487,12 +490,12 @@ $(document).ready(function () {
                     }
                     companyName = $("#showSearchJobCompanyName" + jobPostId).val();
 
-                    if ($("#filterByCompanyNameCheckBox" + companyName.replace(/\s+/g, '')).length == 0) {
+                    if ($("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
                         thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
-                        thisFilter = thisFilter.replace("IDVAL", companyName.replace(/\s+/g, ''));
+                        thisFilter = thisFilter.replace("IDVAL", companyName.replace(/[^a-zA-Z0-9]/g, ''));
                         $("#filterByCompanyName").append(thisFilter);
 
-                        $("#filterByCompanyNameCheckBox" + companyName.replace(/\s+/g, '')).click(function() {
+                        $("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
                             updateSearchResults();
                         });
                     }
@@ -503,12 +506,12 @@ $(document).ready(function () {
                     }
                     locationName = $("#showSearchJobLocation" + jobPostId).val();
 
-                    if ($("#filterByLocationCheckBox" + locationName.replace(/\s+/g, '')).length == 0) {
+                    if ($("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
                         thisFilter = filterByLocationCheckBox.replace(/LOC/g, locationName);
-                        thisFilter = thisFilter.replace("IDVAL", locationName.replace(/\s+/g, ''));
+                        thisFilter = thisFilter.replace("IDVAL", locationName.replace(/[^a-zA-Z0-9]/g, ''));
                         $("#filterByLocation").append(thisFilter);
 
-                        $("#filterByLocationCheckBox" + locationName.replace(/\s+/g, '')).click(function() {
+                        $("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).click(function() {
                             updateSearchResults();
                         });
                     }
