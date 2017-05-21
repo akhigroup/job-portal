@@ -67,7 +67,7 @@ public class LoginController {
                 e.printStackTrace();
             }
             modelAndView.addObject("successMessage", "User has been registered successfully");
-            modelAndView.addObject("user", new User());
+            modelAndView.addObject("userModel", new UserModel());
             modelAndView.setViewName("registration");
 
         }
