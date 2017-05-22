@@ -6,6 +6,7 @@
     <title>Company</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.0/css/bootstrap-slider.min.css}">
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
@@ -44,12 +45,12 @@
                                     </div>
                                 </div>
                                 <br><br>
-                                <div class="list-group col-xs-4">
+                                <div class="list-group col-xs-6">
                                     <div id="filterByCompanyName"></div>
                                     <div id="filterByLocation"></div>
                                     <div id="filterBySalary"></div>
                                 </div>
-                                <div id="searchResult" class="list-group col-xs-8">
+                                <div id="searchResult" class="list-group col-xs-6">
 
                                 </div>
                             </div>
@@ -202,6 +203,7 @@
 </div>
 <script th:src="@{https://code.jquery.com/jquery-2.2.0.min.js}"></script>
 <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.0/bootstrap-slider.min.js}"></script>
 <script th:src="@{/company.js}"></script>
 </body>
 </html>

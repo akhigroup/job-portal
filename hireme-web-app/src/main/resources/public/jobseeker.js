@@ -340,6 +340,10 @@ $(document).ready(function () {
 	var filterByLocationCheckBox = '<div class="checkbox" id="filterByLocationCheckBoxIDVAL"> ' +
 	'<label><input type="checkbox" value="LOC">LOC</label> ' +
 	'</div>';
+	
+	var filterBySalaryRange = '<b style="padding-right: 10px;">$ MIN_VALUE</b> ' +
+		'<input id="salaryRange" type="text" class="span2" value="" data-slider-min="MIN_VALUE" data-slider-max="MAX_VALUE" data-slider-step="STEP_VALUE" data-slider-value="[MIN_VALUE,MAX_VALUE]"/> ' +
+		'<b style="padding-left: 10px;">$ MAX_VALUE</b>';
 
 
 	$("#profilePicture").change(function () {
@@ -369,7 +373,7 @@ $(document).ready(function () {
 	});
 
 
-	//Search Job
+	// Search Job
 	$("#searchButton").click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -389,6 +393,9 @@ $(document).ready(function () {
 			locationNameFilterApplied = false;
 
 			filterResult = [];
+			salaryRange = $("#salaryRange").val();
+			minSalary = parseInt(salaryRange.split(",")[0]);
+			maxSalary = parseInt(salaryRange.split(",")[1]);
 
 			function intersect_safe(a, b) {
 				ai = 0, bi = 0;
@@ -410,40 +417,40 @@ $(document).ready(function () {
 				}
 				return result;
 			}
+			
+			function checkSalaryRange(salary) {
+				return salary >= minSalary && salary <= maxSalary;
+			};
 
-			//As per company Name
+			// As per company Name
 			$('#filterByCompanyName  input:checked').each(function () {
 				companyNameFilterApplied = true;
 				copmanyName = $(this).val();
 				$('.searchJobModal').each(function (i, obj) {
 					jobPostId = $(obj).attr("id");
 					jobPostId = jobPostId.replace("showSearchJobModal", "");
-					if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName) {
+					salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+					if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName && checkSalaryRange(salary)) {
 						companyNameFilterResult.push("#jobsSearch" + jobPostId);
 					}
 				});
 			});
 
-			//As per Location
+			// As per Location
 			$('#filterByLocation  input:checked').each(function () {
 				locationNameFilterApplied = true;
 				locationName = $(this).val();
 				$('.searchJobModal').each(function (i, obj) {
 					jobPostId = $(obj).attr("id");
 					jobPostId = jobPostId.replace("showSearchJobModal", "");
-					/*alert($("#showSearchJobLocation" + jobPostId).val());
-                    alert(locationName);
-                    alert($("#showSearchJobLocation" + jobPostId).val() == locationName);*/
-					if ($("#showSearchJobLocation" + jobPostId).val() == locationName) {
-						//$("#jobsSearch" +  jobPostId).show();
+					salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+					if ($("#showSearchJobLocation" + jobPostId).val() == locationName && checkSalaryRange(salary)) {
 						locationNameFilterResult.push("#jobsSearch" + jobPostId);
 					}
 				});
 			});
-
+ 
 			if (locationNameFilterApplied && companyNameFilterApplied) {
-				//alert(locationNameFilterResult);
-				//alert(companyNameFilterResult);
 				filterResult = intersect_safe(locationNameFilterResult, companyNameFilterResult);
 			} else if (locationNameFilterApplied) {
 				filterResult = locationNameFilterResult;
@@ -457,6 +464,20 @@ $(document).ready(function () {
 
 			if(!companyNameFilterApplied && !locationNameFilterApplied) {
 				$('.searchResult').show();
+				minPossibleSalary = parseInt($("#salaryRange").attr("data-slider-min"));
+				maxPossibleSalary = parseInt($("#salaryRange").attr("data-slider-max"));
+
+				// If range bar has changed
+				if(minSalary != minPossibleSalary || minSalary != maxPossibleSalary) {
+					$(".searchJobModal").each(function (i, obj) {
+						jobPostId = $(obj).attr("id");
+						jobPostId = jobPostId.replace("showSearchJobModal", "");
+						salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+						if (!checkSalaryRange(salary)) {
+							$("#jobsSearch" + jobPostId).hide();
+						}
+					});
+				}
 			}
 		}
 
@@ -466,6 +487,9 @@ $(document).ready(function () {
 				if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
 					jobPosts = object.jobPostList.jobPost;
 					i = 0;
+					minSal = Number.MAX_VALUE;
+					maxSal = Number.MIN_VALUE;
+					
 					for (i = 0; jobPosts.length > i; i++) {
 						jobPostId = jobPosts[i].jobPostId;
 						thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
@@ -483,11 +507,11 @@ $(document).ready(function () {
 						$("#showSearchJobLocation" + jobPostId).val(jobPosts[i].location);
 						$("#showSearchJobSalary" + jobPostId).val(jobPosts[i].salary);
 						$("#showSearchJobCompanyName" + jobPostId).val(jobPosts[i].company.company.name);
-
-						//Adding filters
-						//By company Name
+						
+						// Adding filters
+						// By company Name
 						if("" ==  $("#filterByCompanyName").text()) {
-							$("#filterByCompanyName").append("By Company name")
+							$("#filterByCompanyName").append("By Company name");
 						}
 						companyName = $("#showSearchJobCompanyName" + jobPostId).val();
 
@@ -501,9 +525,10 @@ $(document).ready(function () {
 							});
 						}
 
-						//By Location
+						// By Location
 						if("" ==  $("#filterByLocation").text()) {
-							$("#filterByLocation").append("By Location")
+							$("#filterByLocation").append("By Location");
+							
 						}
 						locationName = $("#showSearchJobLocation" + jobPostId).val();
 
@@ -516,6 +541,15 @@ $(document).ready(function () {
 								updateSearchResults();
 							});
 						}
+						
+						// By Salary
+						if(parseInt(jobPosts[i].salary) > maxSal) {
+							maxSal = parseInt(jobPosts[i].salary);
+						} 
+						
+						if (parseInt(jobPosts[i].salary) < minSal) {
+							minSal = parseInt(jobPosts[i].salary);
+						}
 
 
 						$("#showSearchJobFavorite" + jobPostId).click(function (e) {
@@ -526,11 +560,11 @@ $(document).ready(function () {
 								url: url + "/job/" + favoriteId + "/interest",
 								type: "POST",
 								success: function () {
-									//Close Modal
+									// Close Modal
 									$("#closeShowSearchJob" + favoriteId).click();
 								},
 								error: function (e) {
-									//Close Modal
+									// Close Modal
 									$("#closeShowSearchJob" + favoriteId).click();
 								}
 							});
@@ -547,18 +581,31 @@ $(document).ready(function () {
 								contentType: "application/json; charset=utf-8",
 								dataType: "json",
 								success: function () {
-									//Close Modal
+									// Close Modal
 									$("#closeShowSearchJob" + jobPostApplyId).click();
 								},
 								error: function (e) {
 									var errorResponse = JSON.parse(e.responseText);
-									//Show error
+									// Show error
 									$("#showSearchJobResult" + jobPostApplyId).show();
 									$("#showSearchJobResult" + jobPostApplyId).append(errorResponse.BadRequest.msg);
 								}
 							});
 						});
 					}
+					if("" ==  $("#filterBySalary").text()) {
+						$("#filterBySalary").append("By Salary<br>");
+						salaryFilterValue = filterBySalaryRange.replace(/MIN_VALUE/g, minSal);
+						salaryFilterValue = salaryFilterValue.replace(/MAX_VALUE/g, maxSal);
+						stepValue = (maxSal - minSal)/100;
+						salaryFilterValue = salaryFilterValue.replace(/STEP_VALUE/g, stepValue);
+						$("#filterBySalary").append(salaryFilterValue);
+						$("#salaryRange").slider({});
+						$("#salaryRange").on('slideStop', () =>{
+							updateSearchResults();
+						});
+					}
+					
 				} else {
 
 				}
@@ -572,7 +619,7 @@ $(document).ready(function () {
 	});
 
 
-	//Update Profile
+	// Update Profile
 	$("#updateJobSeekerProfile").click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -595,7 +642,7 @@ $(document).ready(function () {
 
 
 
-	//Add new Work Ex
+	// Add new Work Ex
 	$('#newWorkExAdd').click(function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -625,7 +672,7 @@ $(document).ready(function () {
 					$("#from" + workExId).val(workExperienceList[i].from);
 					$("#till" + workExId).val(workExperienceList[i].to);
 
-					//Event handlers for delete button
+					// Event handlers for delete button
 					$("#workExDelete" + workExId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -640,7 +687,7 @@ $(document).ready(function () {
 						});
 					});
 
-					//Event handlers for update button
+					// Event handlers for update button
 					$("#workExUpdate" + workExId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -668,7 +715,7 @@ $(document).ready(function () {
 		});
 	});
 
-	//Add new Education
+	// Add new Education
 	$('#newEducationAdd').click(function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -702,7 +749,7 @@ $(document).ready(function () {
 					$("#eduFrom" + eduId).val(educationList[i].from);
 					$("#eduTill" + eduId).val(educationList[i].to);
 
-					//Event handlers for delete button
+					// Event handlers for delete button
 					$("#eduDelete" + eduId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -718,7 +765,7 @@ $(document).ready(function () {
 						});
 					});
 
-					//Event handlers for update button
+					// Event handlers for update button
 					$("#eduUpdate" + eduId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -748,7 +795,7 @@ $(document).ready(function () {
 		});
 	});
 
-	//Add new Skill
+	// Add new Skill
 	$('#newSkillAdd').click(function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -777,7 +824,7 @@ $(document).ready(function () {
 					$("#yearsOfExp" + skillId).val(skillList[i].numberOfYears);
 
 
-					//Event handlers for delete button
+					// Event handlers for delete button
 					$("#skillDelete" + skillId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -793,7 +840,7 @@ $(document).ready(function () {
 						});
 					});
 
-					//Event handlers for update button
+					// Event handlers for update button
 					$("#skillUpdate" + skillId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -820,12 +867,12 @@ $(document).ready(function () {
 		});
 	});
 
-	//Navigation to other tab
+	// Navigation to other tab
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 		var target = $(e.target).attr("href") // activated tab
 		currentTab = $(".tab-content").find(".active").attr('id');
 
-		//Profile tab
+		// Profile tab
 		if (currentTab == '2') {
 
 			$.get(url, function (data, status) {
@@ -836,7 +883,7 @@ $(document).ready(function () {
 				$("#seekerProfileImage").attr("src", "data:image/jpg;base64," + object.jobseeker.picture);
 
 
-				//Work experience section
+				// Work experience section
 				if("undefined" != typeof object.jobseeker.workExperienceList) {
 					workExperienceList = object.jobseeker.workExperienceList.workExperience;
 					i = 0;
@@ -851,7 +898,7 @@ $(document).ready(function () {
 						$("#from" + workExId).val(workExperienceList[i].from);
 						$("#till" + workExId).val(workExperienceList[i].to);
 
-						//Event handlers for delete button
+						// Event handlers for delete button
 						$("#workExDelete" + workExId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -867,7 +914,7 @@ $(document).ready(function () {
 							});
 						});
 
-						//Event handlers for update button
+						// Event handlers for update button
 						$("#workExUpdate" + workExId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -893,7 +940,7 @@ $(document).ready(function () {
 
 
 
-				//Education Section
+				// Education Section
 				if("undefined" != typeof object.jobseeker.educationList) {
 					educationList = object.jobseeker.educationList.education;
 					for (i = 0; educationList.length > i; i++) {
@@ -909,7 +956,7 @@ $(document).ready(function () {
 						$("#eduFrom" + eduId).val(educationList[i].from);
 						$("#eduTill" + eduId).val(educationList[i].to);
 
-						//Event handlers for delete button
+						// Event handlers for delete button
 						$("#eduDelete" + eduId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -925,7 +972,7 @@ $(document).ready(function () {
 							});
 						});
 
-						//Event handlers for update button
+						// Event handlers for update button
 						$("#eduUpdate" + eduId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -952,7 +999,7 @@ $(document).ready(function () {
 				}
 
 
-				//Skill Section
+				// Skill Section
 				if("undefined" != typeof object.jobseeker.skillList) {
 					skillList = object.jobseeker.skillList.skill;
 					for (i = 0; skillList.length > i; i++) {
@@ -966,7 +1013,7 @@ $(document).ready(function () {
 						$("#yearsOfExp" + skillId).val(skillList[i].numberOfYears);
 
 
-						//Event handlers for delete button
+						// Event handlers for delete button
 						$("#skillDelete" + skillId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -982,7 +1029,7 @@ $(document).ready(function () {
 							});
 						});
 
-						//Event handlers for update button
+						// Event handlers for update button
 						$("#skillUpdate" + skillId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
@@ -1007,7 +1054,7 @@ $(document).ready(function () {
 			});
 		}
 
-		//Applied Jobs tab
+		// Applied Jobs tab
 		if (currentTab == '3') {
 			$.get(url + "/job/application", function (data, status) {
 				object = jQuery.parseJSON(JSON.stringify(data));
@@ -1036,14 +1083,14 @@ $(document).ready(function () {
 								url: url + "/job/" + withdrawId + "/application",
 								type: "DELETE",
 								success: function () {
-									//Close Modal
+									// Close Modal
 									$("#closeShowAppliedJob" + withdrawId).click();
 									$("#showAppliedJobModal" + withdrawId).remove();
-									//Remove the link
+									// Remove the link
 									$("#jobsApplied" + withdrawId).remove();
 								},
 								error: function (e) {
-									//Close Modal
+									// Close Modal
 									$("#closeShowAppliedJob" + withdrawId).click();
 								}
 							});
@@ -1057,7 +1104,7 @@ $(document).ready(function () {
 			});
 		}
 
-		//Favorites Jobs tab
+		// Favorites Jobs tab
 		if (currentTab == '4') {
 			$.get(url + "/job/interest", function (data, status) {
 				object = jQuery.parseJSON(JSON.stringify(data));
@@ -1089,14 +1136,14 @@ $(document).ready(function () {
 							url: url + "/job/" + withdrawId + "/interest",
 							type: "DELETE",
 							success: function () {
-								//Close Modal
+								// Close Modal
 								$("#closeShowInterestedJob" + withdrawId).click();
 								$("#showInterestedJobModal" + withdrawId).remove();
-								//Remove the link
+								// Remove the link
 								$("#jobsInterested" + withdrawId).remove();
 							},
 							error: function (e) {
-								//Close Modal
+								// Close Modal
 								$("#closeShowInterestedJob" + withdrawId).click();
 							}
 						});
@@ -1113,12 +1160,12 @@ $(document).ready(function () {
 							contentType: "application/json; charset=utf-8",
 							dataType: "json",
 							success: function () {
-								//Close Modal
+								// Close Modal
 								$("#closeShowInterestedJob" + jobPostId).click();
 							},
 							error: function (e) {
 								var errorResponse = JSON.parse(e.responseText);
-								//Show error
+								// Show error
 								$("#showInterestedJobResult" + jobPostId).show();
 								$("#showInterestedJobResult" + jobPostId).append(errorResponse.BadRequest.msg);
 							}
@@ -1128,8 +1175,8 @@ $(document).ready(function () {
 				}
 			});
 		}
-		//var container = "#result"+ currentTenant;
-		//$(container).attr('hidden', 'true');
+		// var container = "#result"+ currentTenant;
+		// $(container).attr('hidden', 'true');
 	});
 
 });

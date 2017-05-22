@@ -127,6 +127,10 @@ $(document).ready(function () {
     var filterByLocationCheckBox = '<div class="checkbox" id="filterByLocationCheckBoxIDVAL"> ' +
         '<label><input type="checkbox" value="LOC">LOC</label> ' +
         '</div>';
+    
+    var filterBySalaryRange = '<b style="padding-right: 10px;">$ MIN_VALUE</b> ' +
+	'<input id="salaryRange" type="text" class="span2" value="" data-slider-min="MIN_VALUE" data-slider-max="MAX_VALUE" data-slider-step="STEP_VALUE" data-slider-value="[MIN_VALUE,MAX_VALUE]"/> ' +
+	'<b style="padding-left: 10px;">$ MAX_VALUE</b>';
 
     //Add new Job Post
     $('#newJobPostAdd').click(function (e) {
@@ -286,7 +290,7 @@ $(document).ready(function () {
         $("#filterByLocation").empty();
         $("#filterBySalary").empty();
         var searchQuery = $("#searchText").val();
-
+        
         function updateSearchResults() {
             $('.searchResult').hide();
 
@@ -297,6 +301,9 @@ $(document).ready(function () {
             locationNameFilterApplied = false;
 
             filterResult = [];
+            salaryRange = $("#salaryRange").val();
+			minSalary = parseInt(salaryRange.split(",")[0]);
+			maxSalary = parseInt(salaryRange.split(",")[1]);
 
             function intersect_safe(a, b) {
                 ai = 0, bi = 0;
@@ -319,7 +326,10 @@ $(document).ready(function () {
                 return result;
             }
 
-
+            function checkSalaryRange(salary) {
+				return salary >= minSalary && salary <= maxSalary;
+			};
+			
             //As per company Name
             $('#filterByCompanyName  input:checked').each(function () {
                 companyNameFilterApplied = true;
@@ -327,7 +337,8 @@ $(document).ready(function () {
                 $('.searchJobModal').each(function (i, obj) {
                     jobPostId = $(obj).attr("id");
                     jobPostId = jobPostId.replace("showSearchJobModal", "");
-                    if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName) {
+                    salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+                    if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName && checkSalaryRange(salary)) {
                         companyNameFilterResult.push("#jobsSearch" + jobPostId);
                     }
                 });
@@ -340,11 +351,8 @@ $(document).ready(function () {
                 $('.searchJobModal').each(function (i, obj) {
                     jobPostId = $(obj).attr("id");
                     jobPostId = jobPostId.replace("showSearchJobModal", "");
-                    /*alert($("#showSearchJobLocation" + jobPostId).val());
-                     alert(locationName);
-                     alert($("#showSearchJobLocation" + jobPostId).val() == locationName);*/
-                    if ($("#showSearchJobLocation" + jobPostId).val() == locationName) {
-                        //$("#jobsSearch" +  jobPostId).show();
+                    salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+                    if ($("#showSearchJobLocation" + jobPostId).val() == locationName && checkSalaryRange(salary)) {
                         locationNameFilterResult.push("#jobsSearch" + jobPostId);
                     }
                 });
@@ -366,6 +374,20 @@ $(document).ready(function () {
             
             if(!companyNameFilterApplied && !locationNameFilterApplied) {
             	 $('.searchResult').show();
+            	 minPossibleSalary = parseInt($("#salaryRange").attr("data-slider-min"));
+ 				maxPossibleSalary = parseInt($("#salaryRange").attr("data-slider-max"));
+
+ 				// If range bar has changed
+ 				if(minSalary != minPossibleSalary || minSalary != maxPossibleSalary) {
+ 					$(".searchJobModal").each(function (i, obj) {
+ 						jobPostId = $(obj).attr("id");
+ 						jobPostId = jobPostId.replace("showSearchJobModal", "");
+ 						salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+ 						if (!checkSalaryRange(salary)) {
+ 							$("#jobsSearch" + jobPostId).hide();
+ 						}
+ 					});
+ 				}
             }
         }
         
@@ -375,6 +397,9 @@ $(document).ready(function () {
                 if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
                     jobPosts = object.jobPostList.jobPost;
                     i = 0;
+                    minSal = Number.MAX_VALUE;
+					maxSal = Number.MIN_VALUE;
+					
                     for (i = 0; jobPosts.length > i; i++) {
                         jobPostId = jobPosts[i].jobPostId;
                         thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
@@ -425,7 +450,29 @@ $(document).ready(function () {
                                 updateSearchResults();
                             });
                         }
+                        
+                        // By Salary
+						if(parseInt(jobPosts[i].salary) > maxSal) {
+							maxSal = parseInt(jobPosts[i].salary);
+						} 
+						
+						if (parseInt(jobPosts[i].salary) < minSal) {
+							minSal = parseInt(jobPosts[i].salary);
+						}
                     }
+                    
+                    if("" ==  $("#filterBySalary").text()) {
+						$("#filterBySalary").append("By Salary<br>");
+						salaryFilterValue = filterBySalaryRange.replace(/MIN_VALUE/g, minSal);
+						salaryFilterValue = salaryFilterValue.replace(/MAX_VALUE/g, maxSal);
+						stepValue = (maxSal - minSal)/100;
+						salaryFilterValue = salaryFilterValue.replace(/STEP_VALUE/g, stepValue);
+						$("#filterBySalary").append(salaryFilterValue);
+						$("#salaryRange").slider({});
+						$("#salaryRange").on('slideStop', () =>{
+							updateSearchResults();
+						});
+					}
                 } else {
                 }
             });
