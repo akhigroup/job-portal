@@ -172,7 +172,7 @@ $(document).ready(function () {
 	var anchorJobApplied =
 		'<a href="#" id="jobsAppliedJobPostID" class="list-group-item list-group-item-action" ' +
 		'data-target="#showAppliedJobModalJobPostID" data-toggle="modal" ' +
-		'>JobTitle</a>';
+		'>JobTitle<h5 style="position: relative; float: right">ApplicationStatus</h5></a>';
 
 
 	var showInterestedJobsModal = '<div class="modal" id="showInterestedJobModalJobPostID" role="dialog">' +
@@ -1018,6 +1018,7 @@ $(document).ready(function () {
 					thisAnchor = anchorJobApplied.replace(/JobPostID/g, jobPostId);
 					thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
 					thisModal = showAppliedJobsModal.replace(/JobPostID/g, jobPostId);
+					thisAnchor = thisAnchor.replace(/ApplicationStatus/g, jobPosts[i].applicationStatus);
 
 					if ($("#jobsApplied" + jobPostId).length == 0) {
 						$("#3").append(thisModal);
@@ -1067,6 +1068,7 @@ $(document).ready(function () {
 					thisAnchor = anchorJobInterested.replace(/JobPostID/g, jobPostId);
 					thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
 					thisModal = showInterestedJobsModal.replace(/JobPostID/g, jobPostId);
+					
 					if ($("#jobsInterested" + jobPostId).length == 0) {
 						$("#4").append(thisModal);
 						$("#interestedJobsDiv").append(thisAnchor);
