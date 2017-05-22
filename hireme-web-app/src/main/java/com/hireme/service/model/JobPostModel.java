@@ -1,5 +1,6 @@
 package com.hireme.service.model;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,6 +27,9 @@ public class JobPostModel {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String jobPostStatus;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Map<String, List<JobSeekerModel>>  applications;
 	
 	public long getJobPostId() {
 		return jobPostId;
@@ -97,5 +101,35 @@ public class JobPostModel {
 
 	public void setJobPostStatus(String jobPostStatus) {
 		this.jobPostStatus = jobPostStatus;
+	}
+	
+	public Map<String, List<JobSeekerModel>> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(Map<String, List<JobSeekerModel>> applications) {
+		this.applications = applications;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (jobPostId ^ (jobPostId >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JobPostModel other = (JobPostModel) obj;
+		if (jobPostId != other.jobPostId)
+			return false;
+		return true;
 	}
 }

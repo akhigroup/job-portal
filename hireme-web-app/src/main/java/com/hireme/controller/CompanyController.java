@@ -1,6 +1,10 @@
 package com.hireme.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Company;
 import com.hireme.model.JobPost;
+import com.hireme.model.JobSeeker;
 import com.hireme.service.CompanyService;
 import com.hireme.service.JobService;
 import com.hireme.service.model.CompanyModel;
+import com.hireme.service.model.JobPostModel;
+import com.hireme.service.model.JobSeekerModel;
 import com.hireme.service.model.Response;
 import com.hireme.service.util.ServiceUtil;
 
@@ -122,6 +129,24 @@ public class CompanyController {
 		try {
 			List<JobPost> jobPosts = jobService.searchJobs(queryString);
 			return ResponseEntity.ok(ServiceUtil.buildResponse("jobPostList", ServiceUtil.getJobPostList(jobPosts, true), null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+	
+	@GetMapping(value = "/applications", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> getApplications(@PathVariable(name = "userId", required = true) long userId) {
+		try {
+			Map<JobPost, Set<JobSeeker>> applications = companyService.getJobApplications(userId);
+			List<JobPostModel> response = new ArrayList<>();
+			for (JobPost jobPost : applications.keySet()) {
+				List<JobSeeker> jobSeekers = new ArrayList<>();
+				jobSeekers.addAll(applications.get(jobPost));
+				response.add(ServiceUtil.getJobPostModelWithApplications(jobPost, jobSeekers));
+			}
+			return ResponseEntity.ok(ServiceUtil.buildResponse("applications", response, null));
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),

@@ -1,10 +1,13 @@
 package com.hireme.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.hireme.exceptions.BusinessException;
 import com.hireme.model.Company;
 import com.hireme.model.JobPost;
+import com.hireme.model.JobSeeker;
 
 public interface CompanyService {
 	
@@ -25,5 +28,7 @@ public interface CompanyService {
 	List<JobPost> postJob(long userId, JobPost jobPost) throws BusinessException;
 
 	List<JobPost> updateJobPost(long userId, long jobId, JobPost jobPost) throws BusinessException;
+
+	Map<JobPost, Set<JobSeeker>> getJobApplications(long userId) throws BusinessException;
 	
 }

@@ -123,6 +123,24 @@ public class ServiceUtil {
 		return response;
 	}
 
+	public static Map<String, List<JobSeekerModel>> buildJobSeekerListResponse(String key, JobSeekerModel value,
+			Map<String, List<JobSeekerModel>> response) {
+		if (response == null) {
+			response = new HashMap<>();
+			response.put(key, new ArrayList<>());
+		}
+		response.get(key).add(value);
+		return response;
+	}
+
+	public static Map<String, List<JobSeekerModel>> getJobSeekerList(List<JobSeeker> jobSeekers) {
+		Map<String, List<JobSeekerModel>> response = null;
+		for (JobSeeker jobSeeker : jobSeekers) {
+			response = buildJobSeekerListResponse("jobSeeker", getJobSeeekerModel(jobSeeker, true), response);
+		}
+		return response;
+	}
+
 	public static EducationModel getEducationModel(Education education) {
 		EducationModel educationModel = new EducationModel();
 		educationModel.setDegree(education.getDegree());
@@ -228,13 +246,22 @@ public class ServiceUtil {
 		return jobPostModel;
 	}
 
+
+	public static JobPostModel getJobPostModelWithApplications(JobPost jobPost, List<JobSeeker> jobSeekers) {
+		JobPostModel jobPostModel = getJobPostModel(jobPost, false);
+		Map<String, List<JobSeekerModel>> applications = getJobSeekerList(jobSeekers);
+		jobPostModel.setApplications(applications);
+		return jobPostModel;
+	}
+
+
 	public static User getUser(UserModel userForm) {
 		User user = new User();
 		user.setEmail(userForm.getEmail());
 		user.setPassword(userForm.getPassword());
 		return user;
 	}
-	
+
 	public static void sendMail(String email, String subject, String body) {
 		String from = "hiremewebapp@gmail.com";// change accordingly
 		final String username = "hiremewebapp@gmail.com";// change accordingly
