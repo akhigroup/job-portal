@@ -30,5 +30,6 @@ public interface CompanyService {
 	List<JobPost> updateJobPost(long userId, long jobId, JobPost jobPost) throws BusinessException;
 
 	Map<JobPost, Set<JobSeeker>> getJobApplications(long userId) throws BusinessException;
-	
+
+    void updateJobApplicationStatus(long userId, long jobPostId, long jobSeekerId, String status) throws BusinessException;
 }

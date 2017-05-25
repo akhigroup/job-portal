@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.hireme.model.id.SeekerPostId;
+import com.hireme.service.util.ServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -226,5 +228,29 @@ public class CompanyServiceImpl implements CompanyService {
 		} else {
 			throw new BusinessException(404, "No job posts for company " + company.getName());
 		}
+	}
+
+	@Override
+	public void updateJobApplicationStatus(long userId, long jobPostId, long jobSeekerId, String status) throws BusinessException {
+		Company company = getByUserId(userId);
+		List<JobPost> jobPosts = company.getJobPosts();
+
+		for (JobPost jobPost: jobPosts) {
+			if(jobPostId == jobPost.getJobPostId()) {
+				SeekerPostId seekerPostId = new SeekerPostId();
+				seekerPostId.setJobPostId(jobPostId);
+				seekerPostId.setJobSeekerId(jobSeekerId);
+				JobApplication jobApplication =  jobApplicationRepository.findOne(seekerPostId);
+				if(jobApplication != null) {
+					jobApplication.setStatus(status);
+					jobApplicationRepository.save(jobApplication);
+					JobSeeker jobSeeker = jobSeekerService.get(jobSeekerId);
+					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "Status change for your application at "+ company.getName(), "Your application status has been changed to "+ status);
+				} else {
+					throw new BusinessException(404, "No such application found to update");
+				}
+			}
+		}
+
 	}
 }

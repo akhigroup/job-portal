@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 
-	url = "http://localhost:8080/"+ $("#userId").val()+ "/jobseeker";
+	var url = "http://localhost:8080/"+ $("#userId").val()+ "/jobseeker";
 
 
 	var formWorkEx = '<form id="workExFormIdworkExID" name="workExForm" class="form-horizontal">' +
@@ -192,7 +192,6 @@ $(document).ready(function () {
 	' placeholder="Company name" readonly="readonly">' +
 	'</div>' +
 	'</div>' +
-
 	' <div class="form-group">' +
 	'<label class="control-label col-xs-3" for="showInterestedJobTitleJobPostID">Job Title</label>' +
 	'<div class="col-xs-9">' +
@@ -271,7 +270,6 @@ $(document).ready(function () {
 	' placeholder="Company name" readonly="readonly">' +
 	'</div>' +
 	'</div>' +
-
 	' <div class="form-group">' +
 	'<label class="control-label col-xs-3" for="showSearchJobTitleJobPostID">Job Title</label>' +
 	'<div class="col-xs-9">' +
@@ -398,20 +396,29 @@ $(document).ready(function () {
 		function updateSearchResults() {
 			$('.searchResult').hide();
 
-			companyNameFilterResult = [];
-			companyNameFilterApplied = false;
+			var companyNameFilterResult = [];
+            var companyNameFilterApplied = false;
 
-			locationNameFilterResult = [];
-			locationNameFilterApplied = false;
+            var locationNameFilterResult = [];
+            var locationNameFilterApplied = false;
 
-			filterResult = [];
-			salaryRange = $("#salaryRange").val();
-			minSalary = parseInt(salaryRange.split(",")[0]);
-			maxSalary = parseInt(salaryRange.split(",")[1]);
+            var filterResult = [];
+            var salaryRange = $("#salaryRange").val();
+            var minSalary = parseInt(salaryRange.split(",")[0]);
+            var maxSalary = parseInt(salaryRange.split(",")[1]);
+            var minPossibleSalary = parseInt($("#salaryRange").attr("data-slider-min"));
+            var maxPossibleSalary = parseInt($("#salaryRange").attr("data-slider-max"));
+
+            if(isNaN(maxSalary)) {
+                maxSalary = maxPossibleSalary;
+            }
+            if(isNaN(minSalary)) {
+                minSalary = minPossibleSalary;
+            }
 
 			function intersect_safe(a, b) {
-				ai = 0, bi = 0;
-				result = [];
+                var ai = 0, bi = 0;
+                var result = [];
 
 				while (ai < a.length && bi < b.length) {
 					if (a[ai] < b[bi]) {
@@ -431,17 +438,17 @@ $(document).ready(function () {
 			}
 			
 			function checkSalaryRange(salary) {
-				return salary >= minSalary && salary <= maxSalary;
+                return salary >= minSalary && salary <= maxSalary;
 			};
 
 			// As per company Name
 			$('#filterByCompanyName  input:checked').each(function () {
 				companyNameFilterApplied = true;
-				copmanyName = $(this).val();
+                var copmanyName = $(this).val();
 				$('.searchJobModal').each(function (i, obj) {
-					jobPostId = $(obj).attr("id");
+                    var jobPostId = $(obj).attr("id");
 					jobPostId = jobPostId.replace("showSearchJobModal", "");
-					salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+                    var salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
 					if ($("#showSearchJobCompanyName" + jobPostId).val() == copmanyName && checkSalaryRange(salary)) {
 						companyNameFilterResult.push("#jobsSearch" + jobPostId);
 					}
@@ -451,11 +458,11 @@ $(document).ready(function () {
 			// As per Location
 			$('#filterByLocation  input:checked').each(function () {
 				locationNameFilterApplied = true;
-				locationName = $(this).val();
+                var locationName = $(this).val();
 				$('.searchJobModal').each(function (i, obj) {
-					jobPostId = $(obj).attr("id");
+                    var  jobPostId = $(obj).attr("id");
 					jobPostId = jobPostId.replace("showSearchJobModal", "");
-					salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+                    var  salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
 					if ($("#showSearchJobLocation" + jobPostId).val() == locationName && checkSalaryRange(salary)) {
 						locationNameFilterResult.push("#jobsSearch" + jobPostId);
 					}
@@ -476,15 +483,12 @@ $(document).ready(function () {
 
 			if(!companyNameFilterApplied && !locationNameFilterApplied) {
 				$('.searchResult').show();
-				minPossibleSalary = parseInt($("#salaryRange").attr("data-slider-min"));
-				maxPossibleSalary = parseInt($("#salaryRange").attr("data-slider-max"));
-
-				// If range bar has changed
-				if(minSalary != minPossibleSalary || minSalary != maxPossibleSalary) {
+                // If range bar has changed
+				if(minSalary != minPossibleSalary || maxSalary != maxPossibleSalary) {
 					$(".searchJobModal").each(function (i, obj) {
-						jobPostId = $(obj).attr("id");
+						var jobPostId = $(obj).attr("id");
 						jobPostId = jobPostId.replace("showSearchJobModal", "");
-						salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
+						var salary = parseInt($("#showSearchJobSalary" + jobPostId).val());
 						if (!checkSalaryRange(salary)) {
 							$("#jobsSearch" + jobPostId).hide();
 						}
@@ -495,18 +499,17 @@ $(document).ready(function () {
 
 		if(searchQuery != "") { 
 			$.get(url + "/job/" + searchQuery, function (data, status) {
-				object = jQuery.parseJSON(JSON.stringify(data));
+				var object = jQuery.parseJSON(JSON.stringify(data));
 				if("undefined" != typeof object.jobPostList && "undefined" != typeof object.jobPostList.jobPost) {
-					jobPosts = object.jobPostList.jobPost;
-					i = 0;
-					minSal = Number.MAX_VALUE;
-					maxSal = Number.MIN_VALUE;
+					var jobPosts = object.jobPostList.jobPost;
+					var minSal = Number.MAX_VALUE;
+					var maxSal = Number.MIN_VALUE;
 					
-					for (i = 0; jobPosts.length > i; i++) {
-						jobPostId = jobPosts[i].jobPostId;
-						thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
+					for (var i = 0; jobPosts.length > i; i++) {
+						var jobPostId = jobPosts[i].jobPostId;
+						var thisAnchor = anchorJobSearch.replace(/JobPostID/g, jobPostId);
 						thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
-						thisModal = showSearchJobsModal.replace(/JobPostID/g, jobPostId);
+						var thisModal = showSearchJobsModal.replace(/JobPostID/g, jobPostId);
 						if ($("#jobsSearch" + jobPostId).length == 0) {
 							$("#searchResult").append(thisModal);
 							$("#searchResult").append(thisAnchor);
@@ -525,10 +528,10 @@ $(document).ready(function () {
 						if("" ==  $("#filterByCompanyName").text()) {
 							$("#filterByCompanyName").append("By Company name");
 						}
-						companyName = $("#showSearchJobCompanyName" + jobPostId).val();
+						var companyName = $("#showSearchJobCompanyName" + jobPostId).val();
 
 						if ($("#filterByCompanyNameCheckBox" + companyName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
-							thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
+							var thisFilter = filterByCompanyNameCheckBox.replace(/CMPNM/g, companyName);
 							thisFilter = thisFilter.replace("IDVAL", companyName.replace(/[^a-zA-Z0-9]/g, ''));
 							$("#filterByCompanyName").append(thisFilter);
 
@@ -542,7 +545,7 @@ $(document).ready(function () {
 							$("#filterByLocation").append("By Location");
 							
 						}
-						locationName = $("#showSearchJobLocation" + jobPostId).val();
+						var locationName = $("#showSearchJobLocation" + jobPostId).val();
 
 						if ($("#filterByLocationCheckBox" + locationName.replace(/[^a-zA-Z0-9]/g, '')).length == 0) {
 							thisFilter = filterByLocationCheckBox.replace(/LOC/g, locationName);
@@ -567,7 +570,7 @@ $(document).ready(function () {
 						$("#showSearchJobFavorite" + jobPostId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							favoriteId = $(this).attr('id').replace("showSearchJobFavorite", "");
+							var favoriteId = $(this).attr('id').replace("showSearchJobFavorite", "");
 							$.ajax({
 								url: url + "/job/" + favoriteId + "/interest",
 								type: "POST",
@@ -586,7 +589,7 @@ $(document).ready(function () {
 						$("#showSearchJobQuickApply" + jobPostId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
+							var jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
 							$.ajax({
 								url: url + "/job/" + jobPostApplyId + "/application",
 								type: "POST",
@@ -607,17 +610,16 @@ $(document).ready(function () {
 					}
 					if("" ==  $("#filterBySalary").text()) {
 						$("#filterBySalary").append("By Salary<br>");
-						salaryFilterValue = filterBySalaryRange.replace(/MIN_VALUE/g, minSal);
+						var salaryFilterValue = filterBySalaryRange.replace(/MIN_VALUE/g, minSal);
 						salaryFilterValue = salaryFilterValue.replace(/MAX_VALUE/g, maxSal);
-						stepValue = (maxSal - minSal)/100;
+						var stepValue = (maxSal - minSal)/100;
 						salaryFilterValue = salaryFilterValue.replace(/STEP_VALUE/g, stepValue);
 						$("#filterBySalary").append(salaryFilterValue);
 						$("#salaryRange").slider({});
-						$("#salaryRange").on('slideStop', () =>{
+						$("#salaryRange").on('slideStop', function() {
 							updateSearchResults();
 						});
 					}
-					
 				} else {
 
 				}
@@ -882,13 +884,13 @@ $(document).ready(function () {
 	// Navigation to other tab
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 		var target = $(e.target).attr("href") // activated tab
-		currentTab = $(".tab-content").find(".active").attr('id');
+		var currentTab = $(".tab-content").find(".active").attr('id');
 
 		// Profile tab
 		if (currentTab == '2') {
 
 			$.get(url, function (data, status) {
-				object = jQuery.parseJSON(JSON.stringify(data));
+				var object = jQuery.parseJSON(JSON.stringify(data));
 				$("#firstName").val(object.jobseeker.firstName);
 				$("#lastName").val(object.jobseeker.lastName);
 				$("#summary").val(object.jobseeker.summary);
@@ -897,11 +899,10 @@ $(document).ready(function () {
 
 				// Work experience section
 				if("undefined" != typeof object.jobseeker.workExperienceList) {
-					workExperienceList = object.jobseeker.workExperienceList.workExperience;
-					i = 0;
-					for (i = 0; workExperienceList.length > i; i++) {
-						workExId = workExperienceList[i].workExperienceId;
-						thisForm = formWorkEx.replace(/workExID/g, workExId);
+					var workExperienceList = object.jobseeker.workExperienceList.workExperience;
+					for (var i = 0; workExperienceList.length > i; i++) {
+						var workExId = workExperienceList[i].workExperienceId;
+						var thisForm = formWorkEx.replace(/workExID/g, workExId);
 						if ($("#workExFormId" + workExId).length == 0) {
 							$("#workEx").append(thisForm);
 						}
@@ -914,7 +915,7 @@ $(document).ready(function () {
 						$("#workExDelete" + workExId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							workExButId = $(this).attr('id');
+							var workExButId = $(this).attr('id');
 							workExButId = workExButId.replace("workExDelete", "");
 
 							$.ajax({
@@ -930,7 +931,7 @@ $(document).ready(function () {
 						$("#workExUpdate" + workExId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							workExButId = $(this).attr('id');
+							var workExButId = $(this).attr('id');
 							workExButId = workExButId.replace("workExUpdate", "");
 							$.ajax({
 								url: url + "/workex/" + workExButId,
@@ -954,9 +955,9 @@ $(document).ready(function () {
 
 				// Education Section
 				if("undefined" != typeof object.jobseeker.educationList) {
-					educationList = object.jobseeker.educationList.education;
-					for (i = 0; educationList.length > i; i++) {
-						eduId = educationList[i].educationId;
+					var educationList = object.jobseeker.educationList.education;
+					for (var i = 0; educationList.length > i; i++) {
+						var eduId = educationList[i].educationId;
 						thisForm = formEducation.replace(/EduID/g, eduId);
 						if ($("#educationFormId" + eduId).length == 0) {
 							$("#education").append(thisForm);
@@ -972,7 +973,7 @@ $(document).ready(function () {
 						$("#eduDelete" + eduId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							eduButId = $(this).attr('id');
+							var eduButId = $(this).attr('id');
 							eduButId = eduButId.replace("eduDelete", "");
 
 							$.ajax({
@@ -988,7 +989,7 @@ $(document).ready(function () {
 						$("#eduUpdate" + eduId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							eduButId = $(this).attr('id');
+							var eduButId = $(this).attr('id');
 							eduButId = eduButId.replace("eduUpdate", "");
 							$.ajax({
 								url: url + "/education/" + eduButId,
@@ -1013,9 +1014,9 @@ $(document).ready(function () {
 
 				// Skill Section
 				if("undefined" != typeof object.jobseeker.skillList) {
-					skillList = object.jobseeker.skillList.skill;
+					var skillList = object.jobseeker.skillList.skill;
 					for (i = 0; skillList.length > i; i++) {
-						skillId = skillList[i].skillId;
+						var skillId = skillList[i].skillId;
 						thisForm = formSkill.replace(/SkillID/g, skillId);
 						if ($("#skillFormId" + skillId).length == 0) {
 							$("#skill").append(thisForm);
@@ -1029,7 +1030,7 @@ $(document).ready(function () {
 						$("#skillDelete" + skillId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							skillButId = $(this).attr('id');
+							var skillButId = $(this).attr('id');
 							skillButId = skillButId.replace("skillDelete", "");
 
 							$.ajax({
@@ -1045,7 +1046,7 @@ $(document).ready(function () {
 						$("#skillUpdate" + skillId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							skillButId = $(this).attr('id');
+							var skillButId = $(this).attr('id');
 							skillButId = skillButId.replace("skillUpdate", "");
 							$.ajax({
 								url: url + "/skill/" + skillButId,
@@ -1069,14 +1070,13 @@ $(document).ready(function () {
 		// Applied Jobs tab
 		if (currentTab == '3') {
 			$.get(url + "/job/application", function (data, status) {
-				object = jQuery.parseJSON(JSON.stringify(data));
-				jobPosts = object.jobPosts;
-				i = 0;
-				for (i = 0; jobPosts.length > i; i++) {
-					jobPostId = jobPosts[i].jobPostId;
-					thisAnchor = anchorJobApplied.replace(/JobPostID/g, jobPostId);
+				var object = jQuery.parseJSON(JSON.stringify(data));
+				var jobPosts = object.jobPosts;
+				for (var i = 0; jobPosts.length > i; i++) {
+					var jobPostId = jobPosts[i].jobPostId;
+					var thisAnchor = anchorJobApplied.replace(/JobPostID/g, jobPostId);
 					thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
-					thisModal = showAppliedJobsModal.replace(/JobPostID/g, jobPostId);
+					var thisModal = showAppliedJobsModal.replace(/JobPostID/g, jobPostId);
 					thisAnchor = thisAnchor.replace(/ApplicationStatus/g, jobPosts[i].applicationStatus);
 
 					if ($("#jobsApplied" + jobPostId).length == 0) {
@@ -1090,7 +1090,7 @@ $(document).ready(function () {
 						$("#showAppliedJobWithdraw" + jobPostId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
-							withdrawId = $(this).attr('id').replace("showAppliedJobWithdraw", "");
+							var withdrawId = $(this).attr('id').replace("showAppliedJobWithdraw", "");
 							$.ajax({
 								url: url + "/job/" + withdrawId + "/application",
 								type: "DELETE",
@@ -1119,14 +1119,13 @@ $(document).ready(function () {
 		// Favorites Jobs tab
 		if (currentTab == '4') {
 			$.get(url + "/job/interest", function (data, status) {
-				object = jQuery.parseJSON(JSON.stringify(data));
-				jobPosts = object.jobPosts.jobPost;
-				i = 0;
-				for (i = 0; jobPosts.length > i; i++) {
-					jobPostId = jobPosts[i].jobPostId;
-					thisAnchor = anchorJobInterested.replace(/JobPostID/g, jobPostId);
+				var object = jQuery.parseJSON(JSON.stringify(data));
+				var jobPosts = object.jobPosts.jobPost;
+				for (var i = 0; jobPosts.length > i; i++) {
+					var jobPostId = jobPosts[i].jobPostId;
+					var thisAnchor = anchorJobInterested.replace(/JobPostID/g, jobPostId);
 					thisAnchor = thisAnchor.replace(/JobTitle/g, jobPosts[i].title);
-					thisModal = showInterestedJobsModal.replace(/JobPostID/g, jobPostId);
+					var thisModal = showInterestedJobsModal.replace(/JobPostID/g, jobPostId);
 					
 					if ($("#jobsInterested" + jobPostId).length == 0) {
 						$("#4").append(thisModal);
@@ -1143,7 +1142,7 @@ $(document).ready(function () {
 					$("#showInterestedJobWithdraw" + jobPostId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						withdrawId = $(this).attr('id').replace("showInterestedJobWithdraw", "");
+						var withdrawId = $(this).attr('id').replace("showInterestedJobWithdraw", "");
 						$.ajax({
 							url: url + "/job/" + withdrawId + "/interest",
 							type: "DELETE",
@@ -1187,8 +1186,6 @@ $(document).ready(function () {
 				}
 			});
 		}
-		// var container = "#result"+ currentTenant;
-		// $(container).attr('hidden', 'true');
 	});
 
 });

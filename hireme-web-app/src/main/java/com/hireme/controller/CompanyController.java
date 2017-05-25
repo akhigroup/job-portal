@@ -1,7 +1,6 @@
 package com.hireme.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,6 @@ import com.hireme.service.CompanyService;
 import com.hireme.service.JobService;
 import com.hireme.service.model.CompanyModel;
 import com.hireme.service.model.JobPostModel;
-import com.hireme.service.model.JobSeekerModel;
 import com.hireme.service.model.Response;
 import com.hireme.service.util.ServiceUtil;
 
@@ -147,6 +145,21 @@ public class CompanyController {
 				response.add(ServiceUtil.getJobPostModelWithApplications(jobPost, jobSeekers));
 			}
 			return ResponseEntity.ok(ServiceUtil.buildResponse("applications", response, null));
+		} catch(BusinessException be) {
+			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(be.getErrorCode()));
+		}
+	}
+
+	@PostMapping(value = "/application/job/{jobId}/jobseeker/{jobSeekerId}/{status}")
+	public ResponseEntity<Object> updateStatus(@PathVariable(name = "userId") long userId,
+												  @PathVariable(name = "jobId") long jobPostId,
+												  @PathVariable(name = "jobSeekerId") long jobSeekerId,
+											      @PathVariable(name = "status") String status) {
+		try {
+			companyService.updateJobApplicationStatus(userId, jobPostId, jobSeekerId, status);
+			return new ResponseEntity( HttpStatus.OK );
 		} catch(BusinessException be) {
 			Response errorResponse = new Response("ERR" + be.getErrorCode(), be.getMessage());
 			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
