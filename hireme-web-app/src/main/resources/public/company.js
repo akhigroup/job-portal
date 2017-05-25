@@ -188,6 +188,8 @@ $(document).ready(function () {
                                 jobPostStatus: $("#stat" + jobPostButId).val()
                             }),
                             success: function () {
+                                $("#successMessage").text("Job Post is Updated!");
+                                $("#successMessageModalAnchor").click();
                             }
                         });
                     });
@@ -216,7 +218,8 @@ $(document).ready(function () {
                 website: $("#website").val()
             }),
             success: function (data) {
-                console.log("Post done successfully")
+                $("#successMessage").text("Profile is Updated!");
+                $("#successMessageModalAnchor").click();
             }
         });
     });
@@ -274,6 +277,8 @@ $(document).ready(function () {
                                 jobPostStatus: $("#stat" + jobPostButId).val()
                             }),
                             success: function () {
+                                $("#successMessage").text("Job Post is Updated!");
+                                $("#successMessageModalAnchor").click();
                             }
                         });
                     });

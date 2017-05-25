@@ -375,7 +375,8 @@ $(document).ready(function () {
 					picture : pictureVal.replace("data:image/jpeg;base64,", "")
 				}),
 				success: function () {
-					console.log("Post done successfully")
+					$("#successMessage").text("Profile is updated!");
+					$("#successMessageModalAnchor").click();
 				}
 			});
 		};
@@ -589,6 +590,23 @@ $(document).ready(function () {
 						$("#showSearchJobQuickApply" + jobPostId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
+
+							if ($("#firstName").val().length == 0 || $("#lastName").val().length == 0) {
+								$.ajax({
+									url: url,
+									type: "get",
+									async: false,
+									success: function (data) {
+										object = jQuery.parseJSON(JSON.stringify(data));
+										$("#firstName").val(object.jobseeker.firstName);
+										$("#lastName").val(object.jobseeker.lastName);
+										$("#summary").val(object.jobseeker.summary);
+									}
+								});
+							}
+
+							if ($("#firstName").val().length > 0 && $("#lastName").val().length > 0) {
+
 							var jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
 							$.ajax({
 								url: url + "/job/" + jobPostApplyId + "/application",
@@ -606,6 +624,10 @@ $(document).ready(function () {
 									$("#showSearchJobResult" + jobPostApplyId).append(errorResponse.BadRequest.msg);
 								}
 							});
+							} else {
+								$("#failureMessage").text("Please complete your profile before applying for a job");
+								$("#inCompleteProfileMessageModalAnchor").click();
+							}
 						});
 					}
 					if("" ==  $("#filterBySalary").text()) {
@@ -649,7 +671,8 @@ $(document).ready(function () {
 				summary: $("#summary").val()
 			}),
 			success: function (data) {
-				console.log("Post done successfully")
+				$("#successMessage").text("Profile is Updated!");
+				$("#successMessageModalAnchor").click();
 			}
 		});
 	});
@@ -719,6 +742,8 @@ $(document).ready(function () {
 								to: $("#till" + workExButId).val()
 							}),
 							success: function () {
+								$("#successMessage").text("Work Experience is Updated!");
+								$("#successMessageModalAnchor").click();
 							}
 						});
 					});
@@ -798,6 +823,8 @@ $(document).ready(function () {
 								to: $("#till" + eduButId).val()
 							}),
 							success: function () {
+								$("#successMessage").text("Education is Updated!");
+								$("#successMessageModalAnchor").click();
 							}
 						});
 					});
@@ -870,6 +897,8 @@ $(document).ready(function () {
 								numberOfYears: $("#yearsOfExp" + skillButId).val()
 							}),
 							success: function () {
+								$("#successMessage").text("Skill is Updated!");
+								$("#successMessageModalAnchor").click();
 							}
 						});
 					});
@@ -945,6 +974,8 @@ $(document).ready(function () {
 									to: $("#till" + workExButId).val()
 								}),
 								success: function () {
+									$("#successMessage").text("Work Experience is Updated!");
+									$("#successMessageModalAnchor").click();
 								}
 							});
 						});
@@ -1004,6 +1035,8 @@ $(document).ready(function () {
 									to: $("#eduTill" + eduButId).val()
 								}),
 								success: function () {
+									$("#successMessage").text("Education is Updated!");
+									$("#successMessageModalAnchor").click();
 								}
 							});
 						});
@@ -1058,6 +1091,8 @@ $(document).ready(function () {
 									numberOfYears: $("#yearsOfExp" + skillButId).val()
 								}),
 								success: function () {
+									$("#successMessage").text("Skill is Updated!");
+									$("#successMessageModalAnchor").click();
 								}
 							});
 						});
