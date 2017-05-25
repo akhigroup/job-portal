@@ -348,6 +348,18 @@ $(document).ready(function () {
 
 	$("#profilePicture").change(function () {
 		file =$(this).prop('files')[0];
+		 if(file.size>=2*1024*1024) {
+             alert("JPG images of maximum 2MB");
+             $("#profilePicture").val("");
+             return;
+         }
+
+         if(!file.type.match('image/jp.*')) {
+             alert("only JPG images");
+             $("#profilePicture").val("");
+             return;
+         }
+         
 		reader = new FileReader();
 		reader.onloadend = function() {
 			pictureVal = reader.result;
