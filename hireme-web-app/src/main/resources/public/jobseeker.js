@@ -229,6 +229,23 @@ $(document).ready(function () {
 	'</div>' +
 	'</div>' +
 	'<div class="form-group">' +
+	'<label class="control-label col-xs-3" for="showSearchJobResumeFileJobPostID">Resume (Optional) : </label>' +
+	'<div class="col-xs-9">' +
+	'<input type="file" name="files[]" class="btn-bs-file btn btn-sm btn-info" id="showSearchJobResumeFileJobPostID" ' +
+	'style=".btn-bs-file{position:relative;}' +
+	'.btn-bs-file input[type="file"]{' +
+	'position: absolute;' +
+	'top: -9999999;' +
+	'filter: alpha(opacity=0);' +
+	'opacity: 0;' +
+	'width:0;' +
+	'height:0;' +
+	'outline: none;' +
+	'cursor: inherit;' +
+	'}" multiple>' +
+	'</div>' +
+	'</div>' +
+	'<div class="form-group">' +
 	'<div class="col-xs-12">' +
 	'<div class="alert alert-danger" id="showInterestedJobResultJobPostID"></div>' +
 	'</div>' +
@@ -237,8 +254,7 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showInterestedobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Quick Apply</button>' +
-	'<button id="showInterestedJobResumeApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Upload Resume and Apply</button>' +
+	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Apply</button>' +
 	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger" >Not interested</button>' +
 	'</div>' +
 	'</div>' +
@@ -307,6 +323,23 @@ $(document).ready(function () {
 	'</div>' +
 	'</div>' +
 	'<div class="form-group">' +
+	'<label class="control-label col-xs-3" for="showSearchJobResumeFileJobPostID">Resume (Optional) : </label>' +
+	'<div class="col-xs-9">' +
+	'<input type="file" name="files[]" class="btn-bs-file btn btn-sm btn-info" id="showSearchJobResumeFileJobPostID" ' +
+	'style=".btn-bs-file{position:relative;}' +
+	'.btn-bs-file input[type="file"]{' +
+	'position: absolute;' +
+	'top: -9999999;' +
+	'filter: alpha(opacity=0);' +
+	'opacity: 0;' +
+	'width:0;' +
+	'height:0;' +
+	'outline: none;' +
+	'cursor: inherit;' +
+	'}" multiple>' +
+	'</div>' +
+	'</div>' +
+	'<div class="form-group">' +
 	'<div class="col-xs-12">' +
 	'<div class="alert alert-danger" id="showSearchJobResultJobPostID"></div>' +
 	'</div>' +
@@ -315,8 +348,7 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showSearchJobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showSearchJobQuickApplyJobPostID" class="btn btn-info">Quick Apply</button>' +
-	'<button id="showSearchJobResumeApplyJobPostID" class="btn btn-info" style="margin-left: 20px;">Upload Resume and Apply</button>' +
+	'<button id="showSearchJobQuickApplyJobPostID" class="btn btn-info">Apply</button>' +
 	'<button id="showSearchJobFavoriteJobPostID" class="btn btn-info"  style="margin-left: 20px;">Add to favorite</button>' +
 	'</div>' +
 	'</div>' +
@@ -818,7 +850,7 @@ $(document).ready(function () {
 							data: JSON.stringify({
 								schoolName: $("#school" + eduButId).val(),
 								degree: $("#degree" + eduButId).val(),
-								field: $("field" + eduButId).val(),
+								field: $("#field" + eduButId).val(),
 								from: $("#from" + eduButId).val(),
 								to: $("#till" + eduButId).val()
 							}),
@@ -1030,7 +1062,7 @@ $(document).ready(function () {
 								data: JSON.stringify({
 									schoolName: $("#school" + eduButId).val(),
 									degree: $("#degree" + eduButId).val(),
-									field: $("field" + eduButId).val(),
+									field: $("#field" + eduButId).val(),
 									from: $("#eduFrom" + eduButId).val(),
 									to: $("#eduTill" + eduButId).val()
 								}),
