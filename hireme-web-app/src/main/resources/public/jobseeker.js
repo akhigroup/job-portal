@@ -159,7 +159,7 @@ $(document).ready(function () {
 	'<div class="col-xs-9">' +
 	'<button id="showAppliedJobAcceptJobPostID" disabled class="btn btn-success">Accept</button>' +
 		'<button id="showAppliedJobRejectJobPostID" disabled class="btn btn-primary" style="margin-left: 20px;">Reject</button>' +
-		'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger divider" style="margin-left: 20px;">Withdraw</button>' +
+		'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger" style="margin-left: 20px;">Withdraw</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -254,7 +254,7 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showInterestedobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Apply</button>' +
+	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;"  data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing">Apply</button>' +
 	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger" >Not interested</button>' +
 	'</div>' +
 	'</div>' +
@@ -620,6 +620,7 @@ $(document).ready(function () {
 						});
 
 						$("#showSearchJobQuickApply" + jobPostId).click(function (e) {
+                            $(this).button('loading');
 							e.preventDefault();
 							e.stopPropagation();
 
@@ -640,12 +641,14 @@ $(document).ready(function () {
 							if ($("#firstName").val().length > 0 && $("#lastName").val().length > 0) {
 
 							var jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
+
 							$.ajax({
 								url: url + "/job/" + jobPostApplyId + "/application",
 								type: "POST",
 								contentType: "application/json; charset=utf-8",
 								dataType: "json",
 								success: function () {
+                                    $("#showSearchJobQuickApply" + jobPostApplyId).button("reset");
 									// Close Modal
 									$("#closeShowSearchJob" + jobPostApplyId).click();
 								},
