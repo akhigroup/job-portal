@@ -22,7 +22,7 @@ public class JobPost {
 	@Column(name = "title")
 	private String title;
 
-	@Column(name = "description")
+	@Column(name = "description", length = 1500)
 	private String description;
 
 	@Column(name = "location")
@@ -34,7 +34,7 @@ public class JobPost {
 	@Column(name = "status")
 	private String jobPostStatus;
 	
-	@Column(name = "responsibilities")
+	@Column(name = "responsibilities", length = 1500)
 	private String responsibilities;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

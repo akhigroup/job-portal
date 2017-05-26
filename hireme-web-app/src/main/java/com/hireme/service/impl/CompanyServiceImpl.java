@@ -145,12 +145,8 @@ public class CompanyServiceImpl implements CompanyService {
 
 				if (currentStatus != newStatus) {
 					currentJobPost.setJobPostStatus(newStatus.name());
-					if (newStatus == JobPostStatus.CANCELLED) {
-						cancelJobPost(userId, jobId);
-					}
-
 					if (newStatus != JobPostStatus.OPEN) {
-						// TODO update interested and applied jobs and send mail
+						cancelJobPost(userId, jobId);
 					}
 				}
 				company = companyDao.update(company);
@@ -186,13 +182,17 @@ public class CompanyServiceImpl implements CompanyService {
 				for (JobApplication jobApplication : appliedJobSeekers) {
 					jobApplication.setStatus(JobApplicationStatus.CANCELLED.name());
 					jobApplicationRepository.save(jobApplication);
-					// TODO send mail
+					JobSeeker jobSeeker = jobSeekerService.get(jobApplication.getJobSeekerId());
+					JobPost jobPost = jobPosts.get(i);
+					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "Status change for your application at " + jobPost.getCompany().getName(), "The job you've applied to has been cancelled.");
 				}
 
 				Set<JobInterest> interestedJobSeekers = jobInterestRepository.findByJobPostId(jobPostId);
 				for (JobInterest jobInterest : interestedJobSeekers) {
 					jobInterestRepository.delete(jobInterest);
-					// TODO send mail
+					JobSeeker jobSeeker = jobSeekerService.get(jobInterest.getJobSeekerId());
+					JobPost jobPost = jobPosts.get(i);
+					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "Status change for your job interest at " + jobPost.getCompany().getName(), "The job you've shown interest in has been cancelled.");
 				}
 
 				jobPosts.get(i).setJobPostStatus(JobPostStatus.CANCELLED.toString());

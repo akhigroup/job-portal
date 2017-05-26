@@ -3,6 +3,9 @@ package com.hireme.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hireme.dao.JobPostDao;
+import com.hireme.service.CompanyService;
+import com.hireme.service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,12 +34,6 @@ import com.hireme.repository.JobApplicationRepository;
 import com.hireme.service.JobSeekerService;
 import com.hireme.service.JobService;
 import com.hireme.service.UserService;
-import com.hireme.service.model.EducationModel;
-import com.hireme.service.model.JobPostModel;
-import com.hireme.service.model.JobSeekerModel;
-import com.hireme.service.model.Response;
-import com.hireme.service.model.SkillModel;
-import com.hireme.service.model.WorkExperienceModel;
 import com.hireme.service.util.ServiceUtil;
 
 @CrossOrigin
@@ -56,6 +53,12 @@ public class JobSeekerController {
 
 	@Autowired
 	private JobApplicationRepository jobApplicationRepository;
+
+	@Autowired
+	private JobPostDao jobPostDao;
+
+	@Autowired
+	private CompanyService companyService;
 
 	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> createOrUpdateJobSeeker(@PathVariable(name = "userId", required = true) long userId,
@@ -360,9 +363,44 @@ public class JobSeekerController {
 		}
 	}
 
+	@PostMapping(value = "/job/{jobPostId}/application/{status}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Object> updateJobStatus(@PathVariable(name = "userId", required = true) long userId,
+			@PathVariable(name = "jobPostId", required = true) long jobPostId,
+												  @PathVariable(name = "status", required = true) String status) {
+		try {
+			userService.getUser(userId);
+			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
+			SeekerPostId seekerPostId = new SeekerPostId();
+			seekerPostId.setJobSeekerId(jobSeeker.getJobSeekerId());
+			seekerPostId.setJobPostId(jobPostId);
+			JobApplication jobApplication = jobApplicationRepository.getOne(seekerPostId);
+			jobApplication.setStatus(JobApplicationStatus.valueOf(status).name());
+			jobApplicationRepository.save(jobApplication);
+			JobPost jobPost = jobPostDao.get(jobPostId);
+
+			//if ACCEPTED change the status to Filled
+			if(JobApplicationStatus.OFFERACCEPTED.equals(JobApplicationStatus.valueOf(status))) {
+				jobPost.setJobPostStatus(JobPostStatus.FILLED.name());
+				companyService.updateJobPost(jobPost.getCompany().getCompanyId(), jobPost);
+			}
+
+			//Send mail to job seeker
+			ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "Application status changed for application at " + jobPost.getCompany().getName(), "Application status changed to " + status);
+
+			//Send mail to company
+			ServiceUtil.sendMail(jobPost.getCompany().getUser().getEmail(), "Application status changed for " + jobPost.getTitle(), "JobSeeker " + jobSeeker.getFirstName() + " " + jobSeeker.getLastName() +" has changed the application status changed to " + status);
+
+			return new ResponseEntity(HttpStatus.valueOf(200));
+		} catch (BusinessException e) {
+			Response errorResponse = new Response("ERR" + e.getErrorCode(), e.getMessage());
+			return new ResponseEntity(ServiceUtil.buildResponse("BadRequest", errorResponse, null),
+					HttpStatus.valueOf(e.getErrorCode()));
+		}
+	}
+
 	@PostMapping(value = "/job/{jobPostId}/application", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Object> applyJob(@PathVariable(name = "userId", required = true) long userId,
-			@PathVariable(name = "jobPostId", required = true) long jobPostId) {
+										   @PathVariable(name = "jobPostId", required = true) long jobPostId) {
 		try {
 			userService.getUser(userId);
 			JobSeeker jobSeeker = jobSeekerService.getByUserId(userId);
@@ -372,15 +410,15 @@ public class JobSeekerController {
 				if(jobPost.getJobPostId() == jobPostId) {
 					Company company = jobPost.getCompany();
 					//Send mail to JobSeeker
-					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "New Job application", "You've successfully submitted an applciation for " + jobPost.getTitle() 
-					+ " @ "+ company.getName() +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
-				
+					ServiceUtil.sendMail(jobSeeker.getUser().getEmail(), "New Job application", "You've successfully submitted an applciation for " + jobPost.getTitle()
+							+ " @ "+ company.getName() +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+
 					//Send mail to Company
 					System.out.println("Sending mail to company " + company.getUser().getEmail());
-					ServiceUtil.sendMail(company.getUser().getEmail(), "New Job application received", "You've received an applciation for " + jobPost.getTitle() 
-					 +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
-					System.out.println("Sent mail to company " + "You've received an applciation for " + jobPost.getTitle() 
-							 +"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+					ServiceUtil.sendMail(company.getUser().getEmail(), "New Job application received", "You've received an applciation for " + jobPost.getTitle()
+							+"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
+					System.out.println("Sent mail to company " + "You've received an applciation for " + jobPost.getTitle()
+							+"\n Location : " + jobPost.getLocation() + "\n Job description : " + jobPost.getDescription() + "\n ");
 				}
 			}
 			return ResponseEntity

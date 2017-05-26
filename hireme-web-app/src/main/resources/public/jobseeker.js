@@ -1,8 +1,5 @@
 $(document).ready(function () {
-
-
 	var url = "http://localhost:8080/"+ $("#userId").val()+ "/jobseeker";
-
 
 	var formWorkEx = '<form id="workExFormIdworkExID" name="workExForm" class="form-horizontal">' +
 	'<div class="form-group">' +
@@ -146,7 +143,7 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" for="showAppliedJobLocationJobPostID">Location: </label>' +
 	'<div class="col-xs-9">' +
 	'<input type="text" class="form-control" id="showAppliedJobLocationJobPostID" ' +
-	' placeholder="Location">' +
+	' placeholder="Location"  readonly="readonly">' +
 	'</div>' +
 	'</div>' +
 	'<div class="form-group">' +
@@ -160,9 +157,12 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showAppliedJobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger">Withdraw</button>' +
+	'<button id="showAppliedJobAcceptJobPostID" disabled class="btn btn-success">Accept</button>' +
+		'<button id="showAppliedJobRejectJobPostID" disabled class="btn btn-primary" style="margin-left: 20px;">Reject</button>' +
+		'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger divider" style="margin-left: 20px;">Withdraw</button>' +
 	'</div>' +
 	'</div>' +
+	'</form>' +
 	'</form>' +
 	'</div>' +
 	'</div>' +
@@ -172,7 +172,7 @@ $(document).ready(function () {
 	var anchorJobApplied =
 		'<a href="#" id="jobsAppliedJobPostID" class="list-group-item list-group-item-action" ' +
 		'data-target="#showAppliedJobModalJobPostID" data-toggle="modal" ' +
-		'>JobTitle<h5 style="position: relative; float: right">ApplicationStatus</h5></a>';
+		'>JobTitle<h5 id="jobsAppliedJobPostIDStatus" style="position: relative; float: right">ApplicationStatus</h5></a>';
 
 
 	var showInterestedJobsModal = '<div class="modal" id="showInterestedJobModalJobPostID" role="dialog">' +
@@ -237,9 +237,9 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showInterestedobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info">Quick Apply</button>' +
-	'<button id="showInterestedJobResumeApplyJobPostID" class="btn btn-info" >Upload Resume and Apply</button>' +
-	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger" style="position: relative; float: right" >Not interested</button>' +
+	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Quick Apply</button>' +
+	'<button id="showInterestedJobResumeApplyJobPostID" class="btn btn-info" style="margin-right: 20px;">Upload Resume and Apply</button>' +
+	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger" >Not interested</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -316,8 +316,8 @@ $(document).ready(function () {
 	'for="showSearchJobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
 	'<button id="showSearchJobQuickApplyJobPostID" class="btn btn-info">Quick Apply</button>' +
-	'<button id="showSearchJobResumeApplyJobPostID" class="btn btn-info" >Upload Resume and Apply</button>' +
-	'<button id="showSearchJobFavoriteJobPostID" class="btn btn-info" style="position: relative; float: right" >Add to favorite</button>' +
+	'<button id="showSearchJobResumeApplyJobPostID" class="btn btn-info" style="margin-left: 20px;">Upload Resume and Apply</button>' +
+	'<button id="showSearchJobFavoriteJobPostID" class="btn btn-info"  style="margin-left: 20px;">Add to favorite</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -1104,6 +1104,7 @@ $(document).ready(function () {
 
 		// Applied Jobs tab
 		if (currentTab == '3') {
+			$("#appliedJobsDiv").empty();
 			$.get(url + "/job/application", function (data, status) {
 				var object = jQuery.parseJSON(JSON.stringify(data));
 				var jobPosts = object.jobPosts;
@@ -1141,13 +1142,54 @@ $(document).ready(function () {
 									$("#closeShowAppliedJob" + withdrawId).click();
 								}
 							});
-
 						});
+
+						if(jobPosts[i].applicationStatus == "OFFERED") {
+                            $("#showAppliedJobAccept" + jobPostId).prop('disabled', false);
+                            $("#showAppliedJobReject" + jobPostId).prop('disabled', false);
+
+                            $("#showAppliedJobAccept" + jobPostId).click(function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                var acceptId = $(this).attr('id').replace("showAppliedJobAccept", "");
+                                $.ajax({
+                                    url: url + "/job/" + acceptId + "/application/OFFERACCEPTED",
+                                    type: "POST",
+                                    success: function () {
+                                    	$("#jobsApplied"+jobPostId+"Status").text("OFFERACCEPTED");
+                                        // Close Modal
+                                        $("#closeShowAppliedJob" + acceptId).click();
+                                    },
+                                    error: function (e) {
+                                        // Close Modal
+                                        $("#closeShowAppliedJob" + withdrawId).click();
+                                    }
+                                });
+
+                            });
+
+                            $("#showAppliedJobReject" + jobPostId).click(function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                var rejectId = $(this).attr('id').replace("showAppliedJobReject", "");
+                                $.ajax({
+                                    url: url + "/job/" + rejectId + "/application/OFFERREJECTED",
+                                    type: "POST",
+                                    success: function () {
+                                        $("#jobsApplied"+jobPostId+"Status").text("OFFERREJECTED");
+                                        // Close Modal
+                                        $("#closeShowAppliedJob" + rejectId).click();
+                                    },
+                                    error: function (e) {
+                                        // Close Modal
+                                        $("#closeShowAppliedJob" + rejectId).click();
+                                    }
+                                });
+                            });
+						}
 						$("#appliedJobsDiv").append(thisAnchor);
 					}
 				}
-
-
 			});
 		}
 

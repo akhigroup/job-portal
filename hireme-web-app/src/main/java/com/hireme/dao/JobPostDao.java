@@ -11,4 +11,6 @@ public interface JobPostDao {
 	
 	List<JobPost> search(String query) throws BusinessException;
 
+	JobPost udpate(JobPost jobPosr) throws BusinessException;
+
 }

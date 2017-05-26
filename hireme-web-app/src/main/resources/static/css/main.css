@@ -34,6 +34,12 @@ span {
     font-family: 'Josefin Sans', sans-serif;
 }
 
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+
 ul {
     list-style-type: none;
     margin: 0;

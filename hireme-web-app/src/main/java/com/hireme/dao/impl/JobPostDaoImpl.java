@@ -74,5 +74,13 @@ public class JobPostDaoImpl implements JobPostDao {
 
 	}
 
+	@Override
+	public JobPost udpate(JobPost jobPost) throws BusinessException {
+		if (jobPostRepository.getOne(jobPost.getJobPostId()) != null) {
+			return jobPostRepository.save(jobPost);
+		}
+		throw new BusinessException(404, "No job post with id " + jobPost.getJobPostId() + " found.");
+	}
+
 
 }
