@@ -1,4 +1,4 @@
-package com.hireme.service;
+package com.hireme;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-	var url = "http://localhost:8080/"+ $("#userId").val()+ "/jobseeker";
+	var url = "http://ec2-54-183-4-29.us-west-1.compute.amazonaws.com:8080/"+ $("#userId").val()+ "/jobseeker";
 
 	var formWorkEx = '<form id="workExFormIdworkExID" name="workExForm" class="form-horizontal">' +
 	'<div class="form-group">' +
