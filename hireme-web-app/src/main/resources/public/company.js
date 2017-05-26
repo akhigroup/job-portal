@@ -45,7 +45,7 @@ $(document).ready(function () {
         '<div class="form-group">' +
         '<label class="control-label col-xs-2" for="jobPostUpdateJobPostedID"></label>' +
         '<div class="col-xs-10">' +
-        '<button id="jobPostUpdateJobPostedID" class="btn btn-info" name="jobPostUpdate">Update</button>' +
+        '<button id="jobPostUpdateJobPostedID" class="btn btn-info" name="jobPostUpdate" data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing">Update</button>' +
         '</div>' +
         '</div>' +
         '</form>';
@@ -135,6 +135,7 @@ $(document).ready(function () {
 
     //Add new Job Post
     $('#newJobPostAdd').click(function (e) {
+        $('#newJobPostAdd').button('loading');
         e.preventDefault();
         e.stopPropagation();
         $.ajax({
@@ -150,7 +151,7 @@ $(document).ready(function () {
                 responsibilities: $("#newResponsibilities").val()
             }),
             success: function (data) {
-
+                $('#newJobPostAdd').button("reset");
                 object = jQuery.parseJSON(JSON.stringify(data));
 
                 jobPostedList = object.jobPostList.jobPost;
@@ -174,6 +175,7 @@ $(document).ready(function () {
                         e.stopPropagation();
                         jobPostButId = $(this).attr('id');
                         jobPostButId = jobPostButId.replace("jobPostUpdate", "");
+                        $("#jobPostUpdate" + jobPostButId).button('loading');
                         $.ajax({
                             url: url + "/job/" + jobPostButId,
                             type: "POST",
@@ -188,6 +190,7 @@ $(document).ready(function () {
                                 jobPostStatus: $("#stat" + jobPostButId).val()
                             }),
                             success: function () {
+                                $("#jobPostUpdate" + jobPostButId).button('reset');
                                 $("#successMessage").text("Job Post is Updated!");
                                 $("#successMessageModalAnchor").click();
                             }
@@ -201,6 +204,7 @@ $(document).ready(function () {
 
     //Update Profile
     $("#updateCompanyProfile").click(function (e) {
+        $("#updateCompanyProfile").button('loading');
         e.preventDefault();
         e.stopPropagation();
 
@@ -218,6 +222,7 @@ $(document).ready(function () {
                 website: $("#website").val()
             }),
             success: function (data) {
+                $("#updateCompanyProfile").button('reset');
                 $("#successMessage").text("Profile is Updated!");
                 $("#successMessageModalAnchor").click();
             }
@@ -263,6 +268,7 @@ $(document).ready(function () {
                         e.stopPropagation();
                         jobPostButId = $(this).attr('id');
                         jobPostButId = jobPostButId.replace("jobPostUpdate", "");
+                        $("#jobPostUpdate" + jobPostButId).button('loading');
                         $.ajax({
                             url: url + "/job/" + jobPostButId,
                             type: "POST",
@@ -277,6 +283,7 @@ $(document).ready(function () {
                                 jobPostStatus: $("#stat" + jobPostButId).val()
                             }),
                             success: function () {
+                                $("#jobPostUpdate" + jobPostButId).button('reset');
                                 $("#successMessage").text("Job Post is Updated!");
                                 $("#successMessageModalAnchor").click();
                             }
@@ -312,51 +319,51 @@ $(document).ready(function () {
 
 
             var modalJobApplicantProfile = '<div class="modal" id="JobPostIDjobApplicantJobSeekerIDProfileModal" role="dialog"> ' +
-                '<div class="modal-dialog"> ' +
-                '<div class="modal-content"> ' +
-                '<div class="modal-header"> ' +
-                '<button type="button" id="closeJobPostIDJobApplicantJobSeekerIDProfileModal" class="close" ' +
+            '<div class="modal-dialog"> ' +
+            '<div class="modal-content"> ' +
+            '<div class="modal-header"> ' +
+            '<button type="button" id="closeJobPostIDJobApplicantJobSeekerIDProfileModal" class="close" ' +
             ' data-dismiss="modal">&times;</button> ' +
             '<h4 class="modal-title text-center form-title">Applicant Profile</h4> ' +
             '</div> ' +
             '<div class="modal-body padtrbl"> ' +
             '<div class="panel panel-default"> ' +
             '<div class="row"> ' +
-            ' <div class="panel-body"> ' +
-            '   <img class="applicantProfileImage" id="JobPostIDJobApplicantJobSeekerIDImage" src="/images/profile.jpg"> ' +
-            '   <span>Profile</span> ' +
-            '   <form class="form-horizontal"> ' +
-            '   <div class="form-group"> ' +
-            '   <label class="control-label col-xs-2" ' +
-            ' for="JobPostIDJobApplicantJobSeekerIDFirstName">First ' +
-            '  name: </label> ' +
-            ' <div class="col-xs-10"> ' +
-            '  <input type="text" class="form-control" ' +
-            ' id="JobPostIDobApplicantJobSeekerIDFirstName" ' +
-            ' placeholder="First name" readonly="readonly" value="FIRST_NAME"> ' +
-            '   </div> ' +
-            '   </div> ' +
-            '    <div class="form-group"> ' +
-            '   <label class="control-label col-xs-2"  ' +
-            ' for="JobPostIDJobApplicantJobSeekerIDLastName">Last  ' +
-            '   name: </label> ' +
-            ' <div class="col-xs-10"> ' +
-            '   <input type="text" class="form-control"  ' +
-            ' id="JobPostIDJobApplicantJobSeekerIDLastName" ' +
-            ' placeholder="Last name" readonly="readonly" value="LAST_NAME"> ' +
-            '  </div> ' +
-            '   </div> ' +
-            '   <div class="form-group"> ' +
-            '   <label class="control-label col-xs-2" for="JobPostIDJobApplicantJobSeekerIDSummary" >Summary ' +
-            '   : </label> ' +
+            '<div class="panel-body"> ' +
+            '<img class="applicantProfileImage" id="JobPostIDJobApplicantJobSeekerIDImage" src="/images/profile.jpg"> ' +
+            '<span>Profile</span> ' +
+            '<form class="form-horizontal"> ' +
+            '<div class="form-group"> ' +
+            '<label class="control-label col-xs-2" ' +
+            'for="JobPostIDJobApplicantJobSeekerIDFirstName">First ' +
+            'name: </label> ' +
             '<div class="col-xs-10"> ' +
-            '   <textarea class="form-control" id="JobPostIDJobApplicantJobSeekerIDSummary" ' +
-            ' placeholder="Summary..." readonly="readonly" >SUMMARY</textarea> ' +
-            '    </div> ' +
-            '    </div> ' +
-            '   </form> ' +
-            '   </div> ' +
-            '   </div> ' +
+            '<input type="text" class="form-control" ' +
+            'id="JobPostIDobApplicantJobSeekerIDFirstName" ' +
+            'placeholder="First name" readonly="readonly" value="FIRST_NAME"> ' +
+            '</div> ' +
+            '</div> ' +
+            '<div class="form-group"> ' +
+            '<label class="control-label col-xs-2"  ' +
+            'for="JobPostIDJobApplicantJobSeekerIDLastName">Last  ' +
+            'name: </label> ' +
+            '<div class="col-xs-10"> ' +
+            '<input type="text" class="form-control"  ' +
+            'id="JobPostIDJobApplicantJobSeekerIDLastName" ' +
+            'placeholder="Last name" readonly="readonly" value="LAST_NAME"> ' +
+            '</div> ' +
+            '</div> ' +
+            '<div class="form-group"> ' +
+            '<label class="control-label col-xs-2" for="JobPostIDJobApplicantJobSeekerIDSummary" >Summary ' +
+            ': </label> ' +
+            '<div class="col-xs-10"> ' +
+            '<textarea class="form-control" id="JobPostIDJobApplicantJobSeekerIDSummary" ' +
+            'placeholder="Summary..." readonly="readonly" >SUMMARY</textarea> ' +
+            '</div> ' +
+            '</div> ' +
+            '</form> ' +
+            '</div> ' +
+            '</div> ' +
             '   <div class="row"> ' +
             '   <div class="panel-body"> ' +
             '   <span>Work experience</span> ' +
@@ -391,9 +398,8 @@ $(document).ready(function () {
             '   </select> ' +
             '   </div> ' +
                 '<div class="col-xs-10"> ' +
-            '   <input type="button" class="btn btn-info" id="JobPostIDJobApplicantJobSeekerIDStatusUpdate" value="Submit"> ' +
-                '   </div> ' +
-            '   </div> ' +
+            '   <button class="btn btn-info" id="JobPostIDJobApplicantJobSeekerIDStatusUpdate" value="Submit" data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing">Submit</button> ' +
+            '   </div> ' + '   </div> ' +
             '   </form> ' +
             '   </div> ' +
             '   </div> ' +
@@ -561,18 +567,19 @@ $(document).ready(function () {
                         thisAnchorJobApplicant = thisAnchorJobApplicant.replace(/LAST_NAME/g, lastName);
 
                         $("#jobApplications" + jobPostId + "ModalBody").append(thisAnchorJobApplicant);
-                        $("#"+ jobPostId + "JobApplicant" + jobSeekerId + "StatusUpdate").click(function() {
+                        $("#"+ jobPostId + "JobApplicant" + jobSeekerId + "StatusUpdate").click(function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
                             var  ids = $(this).attr('id');
                             ids = ids.replace("JobApplicant", ",");
                             ids = ids.replace("StatusUpdate", "");
                             ids = ids.split(",");
-                            console.log(url + "/application/job/" + ids[0] + "/jobseeker/" + ids[1]+ "/" + $("#"+ids[0] + "JobApplicant" + ids[1] + "Status").val());
+                            $("#"+ ids[0] + "JobApplicant" + ids[1] + "StatusUpdate").button('loading');
                             $.ajax({
                                 url: url + "/application/job/" + ids[0] + "/jobseeker/" + ids[1]+ "/" + $("#"+ids[0] + "JobApplicant" + ids[1] + "Status").val(),
                                 type: "POST",
                                 success: function () {
-                                    //TODO
-                                    console.log("updated");
+                                    $("#"+ ids[0] + "JobApplicant" + ids[1] + "StatusUpdate").button('reset');
                                     $("#close" + ids[0] + "JobApplicant" + ids[1]+"ProfileModal").click();
                                 }
                             });
