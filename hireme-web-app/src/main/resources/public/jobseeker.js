@@ -29,8 +29,8 @@ $(document).ready(function () {
 	'<div class="form-group">' +
 	'<label class="control-label col-xs-2" for="workExUpdateworkExID"></label>' +
 	'<div class="col-xs-10">' +
-	'<button id="workExUpdateworkExID" class="btn btn-info" name="workExUpdate">Update</button>' +
-	'<button id="workExDeleteworkExID" class="btn btn-danger" style="position: relative; float: right"  name="workExDelete">Delete</button>' +
+	'<button id="workExUpdateworkExID" class="btn btn-info" name="workExUpdate" data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Update</button>' +
+	'<button id="workExDeleteworkExID" class="btn btn-danger" style="position: relative; float: right"  name="workExDelete" >Delete</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>';
@@ -69,8 +69,8 @@ $(document).ready(function () {
 	'<div class="form-group">' +
 	'<label class="control-label col-xs-2" for="eduUpdateEduID"></label>' +
 	'<div class="col-xs-10">' +
-	'<button id="eduUpdateEduID" class="btn btn-info" name="eduUpdate">Update</button>' +
-	'<button id="eduDeleteEduID" class="btn btn-danger" style="position: relative; float: right"  name="eduDelete">Delete</button>' +
+	'<button id="eduUpdateEduID" class="btn btn-info" name="eduUpdate" data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Update</button>' +
+	'<button id="eduDeleteEduID" class="btn btn-danger" style="position: relative; float: right"  name="eduDelete" >Delete</button>' +
 	'</div>' +
 	'</div>' +
 	'</div>' +
@@ -92,7 +92,7 @@ $(document).ready(function () {
 	'<div class="form-group">' +
 	'<label class="control-label col-xs-2" for="skillAddSkillID"></label>' +
 	'<div class="col-xs-10">' +
-	'<button id="skillUpdateSkillID" class="btn btn-info" name="skillUpdate">Update</button>' +
+	'<button id="skillUpdateSkillID" class="btn btn-info" name="skillUpdate" data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Update</button>' +
 	'<button id="skillDeleteSkillID" class="btn btn-danger" style="position: relative; float: right"  name="skillDelete">Delete</button>' +
 	'</div>' +
 	'</div>' +
@@ -157,9 +157,9 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showAppliedJobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showAppliedJobAcceptJobPostID" disabled class="btn btn-success">Accept</button>' +
-		'<button id="showAppliedJobRejectJobPostID" disabled class="btn btn-primary" style="margin-left: 20px;">Reject</button>' +
-		'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger" style="margin-left: 20px;">Withdraw</button>' +
+	'<button id="showAppliedJobAcceptJobPostID" disabled class="btn btn-success"   data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Accept</button>' +
+		'<button id="showAppliedJobRejectJobPostID" disabled class="btn btn-primary" style="margin-left: 20px;"   data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Reject</button>' +
+		'<button id="showAppliedJobWithdrawJobPostID" class="btn btn-danger" style="margin-left: 20px;"   data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Withdraw</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -254,8 +254,8 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showInterestedobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;"  data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing">Apply</button>' +
-	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger" >Not interested</button>' +
+	'<button id="showInterestedJobQuickApplyJobPostID" class="btn btn-info" style="margin-right: 20px;"  data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Apply</button>' +
+	'<button id="showInterestedJobWithdrawJobPostID" class="btn btn-danger"   data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Not interested</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -348,8 +348,8 @@ $(document).ready(function () {
 	'<label class="control-label col-xs-3" ' +
 	'for="showSearchJobWithdrawJobPostID"></label>' +
 	'<div class="col-xs-9">' +
-	'<button id="showSearchJobQuickApplyJobPostID" class="btn btn-info">Apply</button>' +
-	'<button id="showSearchJobFavoriteJobPostID" class="btn btn-info"  style="margin-left: 20px;">Add to favorite</button>' +
+	'<button id="showSearchJobQuickApplyJobPostID" class="btn btn-info"   data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Apply</button>' +
+	'<button id="showSearchJobFavoriteJobPostID" class="btn btn-info"  style="margin-left: 20px;"  data-loading-text="<i class=\'fa fa-spinner fa-spin \'></i> Processing" >Add to favorite</button>' +
 	'</div>' +
 	'</div>' +
 	'</form>' +
@@ -620,10 +620,10 @@ $(document).ready(function () {
 						});
 
 						$("#showSearchJobQuickApply" + jobPostId).click(function (e) {
-                            $(this).button('loading');
 							e.preventDefault();
 							e.stopPropagation();
-
+                            var jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
+                            $("#showSearchJobQuickApply" + jobPostApplyId).button('loading');
 							if ($("#firstName").val().length == 0 || $("#lastName").val().length == 0) {
 								$.ajax({
 									url: url,
@@ -640,7 +640,7 @@ $(document).ready(function () {
 
 							if ($("#firstName").val().length > 0 && $("#lastName").val().length > 0) {
 
-							var jobPostApplyId = $(this).attr('id').replace("showSearchJobQuickApply", "");
+
 
 							$.ajax({
 								url: url + "/job/" + jobPostApplyId + "/application",
@@ -653,6 +653,7 @@ $(document).ready(function () {
 									$("#closeShowSearchJob" + jobPostApplyId).click();
 								},
 								error: function (e) {
+                                    $("#showSearchJobQuickApply" + jobPostApplyId).button('reset');
 									var errorResponse = JSON.parse(e.responseText);
 									// Show error
 									$("#showSearchJobResult" + jobPostApplyId).show();
@@ -660,6 +661,7 @@ $(document).ready(function () {
 								}
 							});
 							} else {
+                                $("#showSearchJobQuickApply" + jobPostApplyId).button('reset');
 								$("#failureMessage").text("Please complete your profile before applying for a job");
 								$("#inCompleteProfileMessageModalAnchor").click();
 							}
@@ -692,6 +694,7 @@ $(document).ready(function () {
 
 	// Update Profile
 	$("#updateJobSeekerProfile").click(function(e) {
+        $("#updateJobSeekerProfile").button('loading');
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -706,7 +709,8 @@ $(document).ready(function () {
 				summary: $("#summary").val()
 			}),
 			success: function (data) {
-				$("#successMessage").text("Profile is Updated!");
+                $("#updateJobSeekerProfile").button('reset');
+                $("#successMessage").text("Profile is Updated!");
 				$("#successMessageModalAnchor").click();
 			}
 		});
@@ -763,8 +767,9 @@ $(document).ready(function () {
 					$("#workExUpdate" + workExId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						workExButId = $(this).attr('id');
+						var workExButId = $(this).attr('id');
 						workExButId = workExButId.replace("workExUpdate", "");
+                        $("#workExUpdate" + workExButId).button('loading');
 						$.ajax({
 							url: url + "/workex/" + workExButId,
 							type: "POST",
@@ -777,6 +782,7 @@ $(document).ready(function () {
 								to: $("#till" + workExButId).val()
 							}),
 							success: function () {
+                                $("#workExUpdate" + workExButId).button('reset');
 								$("#successMessage").text("Work Experience is Updated!");
 								$("#successMessageModalAnchor").click();
 							}
@@ -843,8 +849,10 @@ $(document).ready(function () {
 					$("#eduUpdate" + eduId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						eduButId = $(this).attr('id');
-						eduButId = eduButId.replace("eduUpdate", "");
+
+						var eduButId = $(this).attr('id');
+                        eduButId = eduButId.replace("eduUpdate", "");
+                        $("#eduUpdate" + eduButId).button('loading');
 						$.ajax({
 							url: url + "/education/" + eduButId,
 							type: "POST",
@@ -858,6 +866,7 @@ $(document).ready(function () {
 								to: $("#till" + eduButId).val()
 							}),
 							success: function () {
+                                $("#eduUpdate" + eduButId).button('reset');
 								$("#successMessage").text("Education is Updated!");
 								$("#successMessageModalAnchor").click();
 							}
@@ -920,8 +929,9 @@ $(document).ready(function () {
 					$("#skillUpdate" + skillId).click(function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						skillButId = $(this).attr('id');
+						var skillButId = $(this).attr('id');
 						skillButId = skillButId.replace("skillUpdate", "");
+                        $("#skillUpdate" + skillButId).button('loading');
 						$.ajax({
 							url: url + "/skill/" + skillButId,
 							type: "POST",
@@ -932,6 +942,7 @@ $(document).ready(function () {
 								numberOfYears: $("#yearsOfExp" + skillButId).val()
 							}),
 							success: function () {
+                                $("#skillUpdate" + skillButId).button('reset');
 								$("#successMessage").text("Skill is Updated!");
 								$("#successMessageModalAnchor").click();
 							}
@@ -997,6 +1008,7 @@ $(document).ready(function () {
 							e.stopPropagation();
 							var workExButId = $(this).attr('id');
 							workExButId = workExButId.replace("workExUpdate", "");
+                            $("#workExUpdate" + workExButId).button('loading');
 							$.ajax({
 								url: url + "/workex/" + workExButId,
 								type: "POST",
@@ -1009,6 +1021,7 @@ $(document).ready(function () {
 									to: $("#till" + workExButId).val()
 								}),
 								success: function () {
+                                    $("#workExUpdate" + workExButId).button('reset');
 									$("#successMessage").text("Work Experience is Updated!");
 									$("#successMessageModalAnchor").click();
 								}
@@ -1053,10 +1066,12 @@ $(document).ready(function () {
 
 						// Event handlers for update button
 						$("#eduUpdate" + eduId).click(function (e) {
+
 							e.preventDefault();
 							e.stopPropagation();
 							var eduButId = $(this).attr('id');
 							eduButId = eduButId.replace("eduUpdate", "");
+                            $("#eduUpdate" + eduButId).button('loading');
 							$.ajax({
 								url: url + "/education/" + eduButId,
 								type: "POST",
@@ -1070,6 +1085,7 @@ $(document).ready(function () {
 									to: $("#eduTill" + eduButId).val()
 								}),
 								success: function () {
+                                    $("#eduUpdate" + eduButId).button('reset');
 									$("#successMessage").text("Education is Updated!");
 									$("#successMessageModalAnchor").click();
 								}
@@ -1116,6 +1132,7 @@ $(document).ready(function () {
 							e.stopPropagation();
 							var skillButId = $(this).attr('id');
 							skillButId = skillButId.replace("skillUpdate", "");
+                            $("#skillUpdate" + skillButId).button('loading');
 							$.ajax({
 								url: url + "/skill/" + skillButId,
 								type: "POST",
@@ -1126,6 +1143,7 @@ $(document).ready(function () {
 									numberOfYears: $("#yearsOfExp" + skillButId).val()
 								}),
 								success: function () {
+                                    $("#skillUpdate" + skillButId).button('reset');
 									$("#successMessage").text("Skill is Updated!");
 									$("#successMessageModalAnchor").click();
 								}
@@ -1158,14 +1176,17 @@ $(document).ready(function () {
 						$("#showAppliedJobLocation" + jobPostId).val(jobPosts[i].location);
 						$("#showAppliedJobSalary" + jobPostId).val(jobPosts[i].salary);
 						$("#showAppliedJobCompanyName" + jobPostId).val(jobPosts[i].company.company.name);
+
 						$("#showAppliedJobWithdraw" + jobPostId).click(function (e) {
 							e.preventDefault();
 							e.stopPropagation();
 							var withdrawId = $(this).attr('id').replace("showAppliedJobWithdraw", "");
+                            $("#showAppliedJobWithdraw" + withdrawId).button('loading');
 							$.ajax({
 								url: url + "/job/" + withdrawId + "/application",
 								type: "DELETE",
 								success: function () {
+                                    $("#showAppliedJobWithdraw" + withdrawId).button('reset');
 									// Close Modal
 									$("#closeShowAppliedJob" + withdrawId).click();
 									$("#showAppliedJobModal" + withdrawId).remove();
@@ -1173,6 +1194,7 @@ $(document).ready(function () {
 									$("#jobsApplied" + withdrawId).remove();
 								},
 								error: function (e) {
+                                    $("#showAppliedJobWithdraw" + withdrawId).button('reset');
 									// Close Modal
 									$("#closeShowAppliedJob" + withdrawId).click();
 								}
@@ -1187,15 +1209,18 @@ $(document).ready(function () {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 var acceptId = $(this).attr('id').replace("showAppliedJobAccept", "");
+                                $("#showAppliedJobAccept" + acceptId).button('loading');
                                 $.ajax({
                                     url: url + "/job/" + acceptId + "/application/OFFERACCEPTED",
                                     type: "POST",
                                     success: function () {
+                                        $("#showAppliedJobAccept" + acceptId).button('reset');
                                     	$("#jobsApplied"+jobPostId+"Status").text("OFFERACCEPTED");
                                         // Close Modal
                                         $("#closeShowAppliedJob" + acceptId).click();
                                     },
                                     error: function (e) {
+                                        $("#showAppliedJobAccept" + acceptId).button('reset');
                                         // Close Modal
                                         $("#closeShowAppliedJob" + withdrawId).click();
                                     }
@@ -1207,15 +1232,18 @@ $(document).ready(function () {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 var rejectId = $(this).attr('id').replace("showAppliedJobReject", "");
+                                $("#showAppliedJobReject" + rejectId).button('loading');
                                 $.ajax({
                                     url: url + "/job/" + rejectId + "/application/OFFERREJECTED",
                                     type: "POST",
                                     success: function () {
+                                        $("#showAppliedJobReject" + rejectId).button('reset');
                                         $("#jobsApplied"+jobPostId+"Status").text("OFFERREJECTED");
                                         // Close Modal
                                         $("#closeShowAppliedJob" + rejectId).click();
                                     },
                                     error: function (e) {
+                                        $("#showAppliedJobReject" + rejectId).button('reset');
                                         // Close Modal
                                         $("#closeShowAppliedJob" + rejectId).click();
                                     }
@@ -1277,16 +1305,19 @@ $(document).ready(function () {
 						e.preventDefault();
 						e.stopPropagation();
 						jobPostId = $(this).attr('id').replace("showInterestedJobQuickApply", "");
+                        $("#showInterestedJobQuickApply" + jobPostId).button('loading');
 						$.ajax({
 							url: url + "/job/" + jobPostId + "/application",
 							type: "POST",
 							contentType: "application/json; charset=utf-8",
 							dataType: "json",
 							success: function () {
+                                $("#showInterestedJobQuickApply" + jobPostId).button('reset');
 								// Close Modal
 								$("#closeShowInterestedJob" + jobPostId).click();
 							},
 							error: function (e) {
+                                $("#showInterestedJobQuickApply" + jobPostId).button('reset');
 								var errorResponse = JSON.parse(e.responseText);
 								// Show error
 								$("#showInterestedJobResult" + jobPostId).show();
